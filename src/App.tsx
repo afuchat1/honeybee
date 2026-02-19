@@ -7,10 +7,14 @@ import { AuthProvider } from "./hooks/useAuth";
 import { Layout } from "./components/Layout";
 import Index from "./pages/Index";
 import About from "./pages/About";
+import OurStory from "./pages/OurStory";
 import Programs from "./pages/Programs";
+import Vision from "./pages/Vision";
 import Impact from "./pages/Impact";
 import DailyPrayer from "./pages/DailyPrayer";
 import Governance from "./pages/Governance";
+import Gallery from "./pages/Gallery";
+import GetInvolved from "./pages/GetInvolved";
 import Contact from "./pages/Contact";
 import NotFound from "./pages/NotFound";
 import AdminLogin from "./pages/admin/AdminLogin";
@@ -40,10 +44,14 @@ const App = () => (
             <Route element={<Layout />}>
               <Route path="/" element={<Index />} />
               <Route path="/about" element={<About />} />
+              <Route path="/our-story" element={<OurStory />} />
               <Route path="/programs" element={<Programs />} />
+              <Route path="/vision" element={<Vision />} />
               <Route path="/impact" element={<Impact />} />
               <Route path="/daily-prayer" element={<DailyPrayer />} />
               <Route path="/governance" element={<Governance />} />
+              <Route path="/gallery" element={<Gallery />} />
+              <Route path="/get-involved" element={<GetInvolved />} />
               <Route path="/contact" element={<Contact />} />
             </Route>
 

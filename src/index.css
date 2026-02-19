@@ -101,8 +101,8 @@
     @apply absolute inset-0;
     background: linear-gradient(
       to bottom,
-      hsl(var(--forest) / 0.55),
-      hsl(var(--forest) / 0.8)
+      hsl(var(--forest) / 0.5),
+      hsl(var(--forest) / 0.75)
     );
   }
   .hero-text {
