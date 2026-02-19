@@ -5,6 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
+import { supabase } from "@/integrations/supabase/client";
 import { z } from "zod";
 
 const contactSchema = z.object({
@@ -40,14 +41,20 @@ const Contact = () => {
     }
 
     setSubmitting(true);
-    // Simulate submission (will connect to backend later)
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    const { error } = await supabase.from("contact_messages").insert({
+      name: result.data.name,
+      email: result.data.email,
+      subject: result.data.subject,
+      message: result.data.message,
+    });
     setSubmitting(false);
 
-    toast({
-      title: "Message sent",
-      description: "Thank you for reaching out. We will get back to you soon.",
-    });
+    if (error) {
+      toast({ title: "Error", description: "Failed to send message. Please try again.", variant: "destructive" });
+      return;
+    }
+
+    toast({ title: "Message sent", description: "Thank you for reaching out. We will get back to you soon." });
     setForm({ name: "", email: "", subject: "", message: "" });
   };
 
@@ -60,71 +67,35 @@ const Contact = () => {
         </p>
 
         <div className="grid md:grid-cols-5 gap-12 md:gap-16">
-          {/* Form */}
           <div className="md:col-span-3">
             <h2 className="section-heading">Send a Message</h2>
             <form onSubmit={handleSubmit} className="space-y-5">
               <div>
                 <Label htmlFor="name">Full Name</Label>
-                <Input
-                  id="name"
-                  name="name"
-                  value={form.name}
-                  onChange={handleChange}
-                  placeholder="Your full name"
-                  className="mt-1.5"
-                />
+                <Input id="name" name="name" value={form.name} onChange={handleChange} placeholder="Your full name" className="mt-1.5" />
                 {errors.name && <p className="text-sm text-destructive mt-1">{errors.name}</p>}
               </div>
-
               <div>
                 <Label htmlFor="email">Email Address</Label>
-                <Input
-                  id="email"
-                  name="email"
-                  type="email"
-                  value={form.email}
-                  onChange={handleChange}
-                  placeholder="you@example.com"
-                  className="mt-1.5"
-                />
+                <Input id="email" name="email" type="email" value={form.email} onChange={handleChange} placeholder="you@example.com" className="mt-1.5" />
                 {errors.email && <p className="text-sm text-destructive mt-1">{errors.email}</p>}
               </div>
-
               <div>
                 <Label htmlFor="subject">Subject</Label>
-                <Input
-                  id="subject"
-                  name="subject"
-                  value={form.subject}
-                  onChange={handleChange}
-                  placeholder="How can we help?"
-                  className="mt-1.5"
-                />
+                <Input id="subject" name="subject" value={form.subject} onChange={handleChange} placeholder="How can we help?" className="mt-1.5" />
                 {errors.subject && <p className="text-sm text-destructive mt-1">{errors.subject}</p>}
               </div>
-
               <div>
                 <Label htmlFor="message">Message</Label>
-                <Textarea
-                  id="message"
-                  name="message"
-                  value={form.message}
-                  onChange={handleChange}
-                  placeholder="Your message..."
-                  rows={5}
-                  className="mt-1.5"
-                />
+                <Textarea id="message" name="message" value={form.message} onChange={handleChange} placeholder="Your message..." rows={5} className="mt-1.5" />
                 {errors.message && <p className="text-sm text-destructive mt-1">{errors.message}</p>}
               </div>
-
               <Button type="submit" disabled={submitting} className="w-full md:w-auto">
                 {submitting ? "Sending..." : "Send Message"}
               </Button>
             </form>
           </div>
 
-          {/* Contact Details */}
           <div className="md:col-span-2">
             <h2 className="section-heading">Get in Touch</h2>
             <ul className="space-y-5 text-muted-foreground">
@@ -152,7 +123,6 @@ const Contact = () => {
                 </div>
               </li>
             </ul>
-
             <div className="mt-10">
               <h3 className="font-sans font-semibold text-foreground text-sm mb-3">Follow Us</h3>
               <div className="flex gap-4 text-muted-foreground text-sm">
