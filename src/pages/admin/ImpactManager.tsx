@@ -8,7 +8,7 @@ import { Label } from "@/components/ui/label";
 import { Switch } from "@/components/ui/switch";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Pencil, Trash2, Star } from "lucide-react";
+import { Plus, Pencil, Trash2, Star, Upload } from "lucide-react";
 
 interface Story {
   id: string;
@@ -27,6 +27,7 @@ const ImpactManager = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<Story | null>(null);
   const [form, setForm] = useState(emptyForm);
+  const [uploading, setUploading] = useState(false);
 
   const fetchData = async () => {
     const { data } = await supabase.from("impact_stories").select("*").order("sort_order");
@@ -41,6 +42,25 @@ const ImpactManager = () => {
     setEditing(item);
     setForm({ title: item.title, content: item.content, is_featured: item.is_featured, sort_order: item.sort_order });
     setDialogOpen(true);
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, storyId: string) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    const ext = file.name.split(".").pop();
+    const path = `impact/${Date.now()}.${ext}`;
+    const { error: uploadError } = await supabase.storage.from("uploads").upload(path, file);
+    if (uploadError) {
+      toast({ title: "Upload failed", description: uploadError.message, variant: "destructive" });
+      setUploading(false);
+      return;
+    }
+    const { data: urlData } = supabase.storage.from("uploads").getPublicUrl(path);
+    await supabase.from("impact_stories").update({ image_url: urlData.publicUrl }).eq("id", storyId);
+    toast({ title: "Image uploaded" });
+    setUploading(false);
+    fetchData();
   };
 
   const handleSave = async () => {
@@ -77,6 +97,7 @@ const ImpactManager = () => {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border bg-muted/50">
+              <th className="text-left px-4 py-2 font-medium text-muted-foreground">Image</th>
               <th className="text-left px-4 py-2 font-medium text-muted-foreground">Title</th>
               <th className="text-left px-4 py-2 font-medium text-muted-foreground hidden md:table-cell">Featured</th>
               <th className="text-right px-4 py-2 font-medium text-muted-foreground">Actions</th>
@@ -85,6 +106,18 @@ const ImpactManager = () => {
           <tbody>
             {items.map((item) => (
               <tr key={item.id} className="border-b border-border last:border-0">
+                <td className="px-4 py-3">
+                  {item.image_url ? (
+                    <img src={item.image_url} alt={item.title} className="w-12 h-12 object-cover rounded" />
+                  ) : (
+                    <label className="cursor-pointer">
+                      <div className="w-12 h-12 bg-muted rounded flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors">
+                        <Upload size={14} />
+                      </div>
+                      <input type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e, item.id)} disabled={uploading} />
+                    </label>
+                  )}
+                </td>
                 <td className="px-4 py-3 text-foreground font-medium">{item.title}</td>
                 <td className="px-4 py-3 hidden md:table-cell">
                   {item.is_featured && <Star size={14} className="text-primary fill-primary" />}
@@ -96,7 +129,7 @@ const ImpactManager = () => {
               </tr>
             ))}
             {items.length === 0 && (
-              <tr><td colSpan={3} className="px-4 py-6 text-center text-muted-foreground">No stories yet.</td></tr>
+              <tr><td colSpan={4} className="px-4 py-6 text-center text-muted-foreground">No stories yet.</td></tr>
             )}
           </tbody>
         </table>

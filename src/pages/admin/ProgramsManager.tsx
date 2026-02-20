@@ -7,7 +7,7 @@ import { Textarea } from "@/components/ui/textarea";
 import { Label } from "@/components/ui/label";
 import { Dialog, DialogContent, DialogHeader, DialogTitle } from "@/components/ui/dialog";
 import { useToast } from "@/hooks/use-toast";
-import { Plus, Pencil, Trash2 } from "lucide-react";
+import { Plus, Pencil, Trash2, Upload } from "lucide-react";
 
 interface Program {
   id: string;
@@ -27,19 +27,16 @@ const ProgramsManager = () => {
   const [dialogOpen, setDialogOpen] = useState(false);
   const [editing, setEditing] = useState<Program | null>(null);
   const [form, setForm] = useState(emptyForm);
+  const [uploading, setUploading] = useState(false);
 
-  const fetch = async () => {
+  const fetchData = async () => {
     const { data } = await supabase.from("programs").select("*").order("sort_order");
     setItems((data as Program[]) || []);
   };
 
-  useEffect(() => { fetch(); }, []);
+  useEffect(() => { fetchData(); }, []);
 
-  const openAdd = () => {
-    setEditing(null);
-    setForm(emptyForm);
-    setDialogOpen(true);
-  };
+  const openAdd = () => { setEditing(null); setForm(emptyForm); setDialogOpen(true); };
 
   const openEdit = (item: Program) => {
     setEditing(item);
@@ -51,6 +48,25 @@ const ProgramsManager = () => {
       sort_order: item.sort_order,
     });
     setDialogOpen(true);
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>, programId: string) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+    setUploading(true);
+    const ext = file.name.split(".").pop();
+    const path = `programs/${Date.now()}.${ext}`;
+    const { error: uploadError } = await supabase.storage.from("uploads").upload(path, file);
+    if (uploadError) {
+      toast({ title: "Upload failed", description: uploadError.message, variant: "destructive" });
+      setUploading(false);
+      return;
+    }
+    const { data: urlData } = supabase.storage.from("uploads").getPublicUrl(path);
+    await supabase.from("programs").update({ image_url: urlData.publicUrl }).eq("id", programId);
+    toast({ title: "Image uploaded" });
+    setUploading(false);
+    fetchData();
   };
 
   const handleSave = async () => {
@@ -74,7 +90,7 @@ const ProgramsManager = () => {
 
     setDialogOpen(false);
     toast({ title: editing ? "Program updated" : "Program created" });
-    fetch();
+    fetchData();
   };
 
   const handleDelete = async (item: Program) => {
@@ -82,7 +98,7 @@ const ProgramsManager = () => {
     await supabase.from("programs").delete().eq("id", item.id);
     await logActivity("deleted", "program", item.id, { title: item.title });
     toast({ title: "Program deleted" });
-    fetch();
+    fetchData();
   };
 
   return (
@@ -96,6 +112,7 @@ const ProgramsManager = () => {
         <table className="w-full text-sm">
           <thead>
             <tr className="border-b border-border bg-muted/50">
+              <th className="text-left px-4 py-2 font-medium text-muted-foreground">Image</th>
               <th className="text-left px-4 py-2 font-medium text-muted-foreground">Title</th>
               <th className="text-left px-4 py-2 font-medium text-muted-foreground hidden md:table-cell">Order</th>
               <th className="text-right px-4 py-2 font-medium text-muted-foreground">Actions</th>
@@ -104,6 +121,18 @@ const ProgramsManager = () => {
           <tbody>
             {items.map((item) => (
               <tr key={item.id} className="border-b border-border last:border-0">
+                <td className="px-4 py-3">
+                  {item.image_url ? (
+                    <img src={item.image_url} alt={item.title} className="w-12 h-12 object-cover rounded" />
+                  ) : (
+                    <label className="cursor-pointer">
+                      <div className="w-12 h-12 bg-muted rounded flex items-center justify-center text-muted-foreground hover:text-foreground transition-colors">
+                        <Upload size={14} />
+                      </div>
+                      <input type="file" accept="image/*" className="hidden" onChange={(e) => handleImageUpload(e, item.id)} disabled={uploading} />
+                    </label>
+                  )}
+                </td>
                 <td className="px-4 py-3 text-foreground font-medium">{item.title}</td>
                 <td className="px-4 py-3 text-muted-foreground hidden md:table-cell">{item.sort_order}</td>
                 <td className="px-4 py-3 text-right">
@@ -113,14 +142,14 @@ const ProgramsManager = () => {
               </tr>
             ))}
             {items.length === 0 && (
-              <tr><td colSpan={3} className="px-4 py-6 text-center text-muted-foreground">No programs yet.</td></tr>
+              <tr><td colSpan={4} className="px-4 py-6 text-center text-muted-foreground">No programs yet.</td></tr>
             )}
           </tbody>
         </table>
       </div>
 
       <Dialog open={dialogOpen} onOpenChange={setDialogOpen}>
-        <DialogContent className="max-w-lg">
+        <DialogContent className="max-w-lg max-h-[90vh] overflow-y-auto">
           <DialogHeader><DialogTitle>{editing ? "Edit Program" : "Add Program"}</DialogTitle></DialogHeader>
           <div className="space-y-4">
             <div>
