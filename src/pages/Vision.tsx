@@ -1,5 +1,7 @@
-import { Home as HomeIcon, Wrench, Users, MapPin, FileCheck, Heart, ArrowRight } from "lucide-react";
+import { useEffect, useState } from "react";
+import { Home as HomeIcon, Wrench, Users, MapPin, FileCheck, Heart, ArrowRight, Download, FileText } from "lucide-react";
 import { Link } from "react-router-dom";
+import { supabase } from "@/integrations/supabase/client";
 
 const goals = [
   {
@@ -9,13 +11,13 @@ const goals = [
   },
   {
     icon: Wrench,
-    title: "Skills Center",
-    desc: "A fully equipped vocational training center offering certified courses in baking, hairdressing, welding, carpentry, and digital skills — giving youth the tools for independence.",
+    title: "Healing Spaces Inclusive Skills & Recovery Centre",
+    desc: "A holistic centre integrating vocational training (makeup, hairdressing, baking, tailoring, ushering), psychosocial recovery, life-skills development, and structured work-based learning for 20 disabled and vulnerable youth per intake.",
   },
   {
     icon: Users,
-    title: "Mentorship & Life Guidance",
-    desc: "Expanding the Rising Star Academy to mentor 500+ youth across Eastern Uganda — providing education support, career guidance, and spiritual development.",
+    title: "Maama Suubi Restoration Office",
+    desc: "A one-on-one restoration and prayer space in Jinja Town — serving as ministry headquarters for guidance, counseling, Bible & Brunch activities, Campfire sessions, and outreach events.",
   },
 ];
 
@@ -25,7 +27,23 @@ const progress = [
   { icon: Heart, label: "First child supported through the Special Needs program" },
 ];
 
+interface VisionDoc {
+  id: string;
+  title: string;
+  description: string;
+  document_url: string;
+  file_name: string;
+}
+
 const Vision = () => {
+  const [docs, setDocs] = useState<VisionDoc[]>([]);
+
+  useEffect(() => {
+    supabase.from("vision_documents").select("*").order("sort_order").then(({ data }) => {
+      setDocs((data as VisionDoc[]) || []);
+    });
+  }, []);
+
   return (
     <section className="section-spacing">
       <div className="content-container">
@@ -68,6 +86,33 @@ const Vision = () => {
             ))}
           </div>
         </div>
+
+        {/* Downloadable Documents */}
+        {docs.length > 0 && (
+          <div className="mb-16">
+            <h2 className="section-heading">Documents & Proposals</h2>
+            <div className="space-y-3 mt-8">
+              {docs.map((doc) => (
+                <a
+                  key={doc.id}
+                  href={doc.document_url}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="flex items-center gap-4 p-4 rounded-xl border border-border/60 bg-background hover:border-primary/30 transition-colors group"
+                >
+                  <div className="w-10 h-10 rounded-lg bg-primary/10 flex items-center justify-center flex-shrink-0">
+                    <FileText className="w-5 h-5 text-primary" />
+                  </div>
+                  <div className="flex-1 min-w-0">
+                    <p className="text-foreground font-medium group-hover:text-primary transition-colors">{doc.title}</p>
+                    {doc.description && <p className="text-xs text-muted-foreground mt-0.5">{doc.description}</p>}
+                  </div>
+                  <Download size={18} className="text-muted-foreground group-hover:text-primary transition-colors flex-shrink-0" />
+                </a>
+              ))}
+            </div>
+          </div>
+        )}
 
         <div className="text-center">
           <Link to="/get-involved" className="btn-hero btn-hero-primary">

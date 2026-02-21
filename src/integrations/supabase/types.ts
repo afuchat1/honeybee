@@ -177,6 +177,8 @@ export type Database = {
           id: string
           image_url: string | null
           is_featured: boolean
+          profile_image_url: string | null
+          short_description: string
           sort_order: number
           title: string
           updated_at: string
@@ -187,6 +189,8 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_featured?: boolean
+          profile_image_url?: string | null
+          short_description?: string
           sort_order?: number
           title: string
           updated_at?: string
@@ -197,6 +201,8 @@ export type Database = {
           id?: string
           image_url?: string | null
           is_featured?: boolean
+          profile_image_url?: string | null
+          short_description?: string
           sort_order?: number
           title?: string
           updated_at?: string
@@ -266,6 +272,33 @@ export type Database = {
         }
         Relationships: []
       }
+      site_images: {
+        Row: {
+          created_at: string
+          id: string
+          image_key: string
+          image_url: string
+          label: string
+          updated_at: string
+        }
+        Insert: {
+          created_at?: string
+          id?: string
+          image_key: string
+          image_url: string
+          label?: string
+          updated_at?: string
+        }
+        Update: {
+          created_at?: string
+          id?: string
+          image_key?: string
+          image_url?: string
+          label?: string
+          updated_at?: string
+        }
+        Relationships: []
+      }
       site_settings: {
         Row: {
           created_at: string
@@ -290,6 +323,41 @@ export type Database = {
         }
         Relationships: []
       }
+      story_gallery: {
+        Row: {
+          caption: string | null
+          created_at: string
+          id: string
+          image_url: string
+          sort_order: number
+          story_id: string
+        }
+        Insert: {
+          caption?: string | null
+          created_at?: string
+          id?: string
+          image_url: string
+          sort_order?: number
+          story_id: string
+        }
+        Update: {
+          caption?: string | null
+          created_at?: string
+          id?: string
+          image_url?: string
+          sort_order?: number
+          story_id?: string
+        }
+        Relationships: [
+          {
+            foreignKeyName: "story_gallery_story_id_fkey"
+            columns: ["story_id"]
+            isOneToOne: false
+            referencedRelation: "impact_stories"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       user_roles: {
         Row: {
           id: string
@@ -305,6 +373,36 @@ export type Database = {
           id?: string
           role?: Database["public"]["Enums"]["app_role"]
           user_id?: string
+        }
+        Relationships: []
+      }
+      vision_documents: {
+        Row: {
+          created_at: string
+          description: string
+          document_url: string
+          file_name: string
+          id: string
+          sort_order: number
+          title: string
+        }
+        Insert: {
+          created_at?: string
+          description?: string
+          document_url: string
+          file_name?: string
+          id?: string
+          sort_order?: number
+          title: string
+        }
+        Update: {
+          created_at?: string
+          description?: string
+          document_url?: string
+          file_name?: string
+          id?: string
+          sort_order?: number
+          title?: string
         }
         Relationships: []
       }

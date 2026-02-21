@@ -15,6 +15,8 @@ import {
   LogOut,
   Menu,
   X,
+  ImageIcon,
+  FileText,
 } from "lucide-react";
 
 const menuItems = [
@@ -24,6 +26,8 @@ const menuItems = [
   { name: "Impact Stories", path: "/admin/impact", icon: Heart },
   { name: "Messages", path: "/admin/messages", icon: MessageSquare },
   { name: "Gallery", path: "/admin/gallery", icon: Image },
+  { name: "Site Images", path: "/admin/site-images", icon: ImageIcon },
+  { name: "Vision Docs", path: "/admin/vision-docs", icon: FileText },
   { name: "Governance", path: "/admin/governance", icon: Shield },
   { name: "Users & Roles", path: "/admin/users", icon: Users },
   { name: "Settings", path: "/admin/settings", icon: Settings },

@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import { BookOpen, Heart, Image, MessageSquare, Eye } from "lucide-react";
+import { BookOpen, Heart, Image, MessageSquare, Eye, FileText, ImageIcon } from "lucide-react";
+import { Link } from "react-router-dom";
 
 interface StatCard {
   label: string;
   value: number;
   icon: React.ElementType;
+  link?: string;
 }
 
 const Dashboard = () => {
@@ -14,20 +16,24 @@ const Dashboard = () => {
 
   useEffect(() => {
     const fetchStats = async () => {
-      const [programs, stories, gallery, messages, unread] = await Promise.all([
+      const [programs, stories, gallery, messages, unread, siteImages, visionDocs] = await Promise.all([
         supabase.from("programs").select("id", { count: "exact", head: true }),
         supabase.from("impact_stories").select("id", { count: "exact", head: true }),
         supabase.from("gallery").select("id", { count: "exact", head: true }),
         supabase.from("contact_messages").select("id", { count: "exact", head: true }),
         supabase.from("contact_messages").select("id", { count: "exact", head: true }).eq("is_read", false),
+        supabase.from("site_images").select("id", { count: "exact", head: true }),
+        supabase.from("vision_documents").select("id", { count: "exact", head: true }),
       ]);
 
       setStats([
-        { label: "Programs", value: programs.count || 0, icon: BookOpen },
-        { label: "Impact Stories", value: stories.count || 0, icon: Heart },
-        { label: "Gallery Items", value: gallery.count || 0, icon: Image },
-        { label: "Messages", value: messages.count || 0, icon: MessageSquare },
-        { label: "Unread Messages", value: unread.count || 0, icon: Eye },
+        { label: "Programs", value: programs.count || 0, icon: BookOpen, link: "/admin/programs" },
+        { label: "Impact Stories", value: stories.count || 0, icon: Heart, link: "/admin/impact" },
+        { label: "Gallery Items", value: gallery.count || 0, icon: Image, link: "/admin/gallery" },
+        { label: "Site Images", value: siteImages.count || 0, icon: ImageIcon, link: "/admin/site-images" },
+        { label: "Vision Docs", value: visionDocs.count || 0, icon: FileText, link: "/admin/vision-docs" },
+        { label: "Messages", value: messages.count || 0, icon: MessageSquare, link: "/admin/messages" },
+        { label: "Unread", value: unread.count || 0, icon: Eye, link: "/admin/messages" },
       ]);
 
       const { data: msgs } = await supabase
@@ -45,13 +51,13 @@ const Dashboard = () => {
     <div>
       <h1 className="text-2xl font-serif font-bold text-foreground mb-6">Dashboard Overview</h1>
 
-      <div className="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-5 gap-4 mb-8">
+      <div className="grid grid-cols-2 md:grid-cols-4 lg:grid-cols-7 gap-3 mb-8">
         {stats.map((stat) => (
-          <div key={stat.label} className="bg-background p-4 rounded-lg border border-border">
-            <stat.icon size={20} className="text-muted-foreground mb-2" />
+          <Link key={stat.label} to={stat.link || "/admin"} className="bg-background p-4 rounded-lg border border-border hover:border-primary/30 transition-colors">
+            <stat.icon size={18} className="text-muted-foreground mb-2" />
             <p className="text-2xl font-serif font-bold text-foreground">{stat.value}</p>
             <p className="text-xs text-muted-foreground mt-1">{stat.label}</p>
-          </div>
+          </Link>
         ))}
       </div>
 
