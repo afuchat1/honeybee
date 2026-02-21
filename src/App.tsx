@@ -29,6 +29,9 @@ import GovernanceManager from "./pages/admin/GovernanceManager";
 import UsersManager from "./pages/admin/UsersManager";
 import SettingsManager from "./pages/admin/SettingsManager";
 import ActivityLogs from "./pages/admin/ActivityLogs";
+import SiteImagesManager from "./pages/admin/SiteImagesManager";
+import VisionDocsManager from "./pages/admin/VisionDocsManager";
+import StoryDetail from "./pages/StoryDetail";
 
 const queryClient = new QueryClient();
 
@@ -48,6 +51,7 @@ const App = () => (
               <Route path="/programs" element={<Programs />} />
               <Route path="/vision" element={<Vision />} />
               <Route path="/impact" element={<Impact />} />
+              <Route path="/impact/:id" element={<StoryDetail />} />
               <Route path="/daily-prayer" element={<DailyPrayer />} />
               <Route path="/governance" element={<Governance />} />
               <Route path="/gallery" element={<Gallery />} />
@@ -64,6 +68,8 @@ const App = () => (
               <Route path="impact" element={<ImpactManager />} />
               <Route path="messages" element={<ContactMessages />} />
               <Route path="gallery" element={<GalleryManager />} />
+              <Route path="site-images" element={<SiteImagesManager />} />
+              <Route path="vision-docs" element={<VisionDocsManager />} />
               <Route path="governance" element={<GovernanceManager />} />
               <Route path="users" element={<UsersManager />} />
               <Route path="settings" element={<SettingsManager />} />
