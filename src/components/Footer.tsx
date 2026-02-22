@@ -119,13 +119,14 @@ export function Footer() {
         <div className="mt-12 pt-6 border-t border-white/15 text-center text-xs opacity-60">
           © {new Date().getFullYear()} {settings.site_name || "Honeybee Ministries"}. All rights reserved.
           <span className="mx-2">•</span>
+          Developed & Designed by{" "}
           <a
             href="https://wa.me/256703464913"
             target="_blank"
             rel="noopener noreferrer"
-            className="hover:opacity-100 hover:text-primary transition-colors"
+            className="text-green-400 hover:text-green-300 font-medium transition-colors"
           >
-            Developed & Designed by Amkaweesi
+            Amkaweesi
           </a>
         </div>
       </div>
