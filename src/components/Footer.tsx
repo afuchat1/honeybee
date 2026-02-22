@@ -33,7 +33,7 @@ export function Footer() {
   const whatsappLink = `https://wa.me/256760635265?text=Hello%20Amkaweesi!%20I'm%20visiting%20the%20Honeybee%20Ministries%20website%20and%20would%20like%20to%20discuss%20something...`;
 
   return (
-    <footer className="bg-foreground text-white">
+    <footer className="bg-sidebar-background text-white">
       <div className="container mx-auto px-4 py-14 md:py-16">
         <div className="grid md:grid-cols-3 gap-10 md:gap-16">
           
