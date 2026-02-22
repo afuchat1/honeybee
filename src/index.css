@@ -1,3 +1,4 @@
+/* index.css */
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
 
 @tailwind base;
@@ -95,6 +96,11 @@
     --sidebar-border: 25 35% 20%;
     --sidebar-ring: 43 90% 55%;
   }
+
+  /* GLOBAL BUTTONS ROUNDED */
+  button {
+    @apply rounded-lg; /* pill-ish rounded corners for all buttons */
+  }
 }
 
 @layer base {
@@ -123,7 +129,7 @@
   }
 
   .btn-hero {
-    @apply inline-flex items-center justify-center rounded-md px-7 py-3 font-sans font-semibold text-base transition-all duration-200;
+    @apply inline-flex items-center justify-center rounded-lg px-7 py-3 font-sans font-semibold text-base transition-all duration-200;
   }
   .btn-hero-primary {
     background: hsl(var(--primary));
