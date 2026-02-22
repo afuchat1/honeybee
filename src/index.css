@@ -1,4 +1,3 @@
-/* index.css */
 @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@400;500;600;700&family=Source+Sans+3:ital,wght@0,300;0,400;0,500;0,600;0,700;1,400&display=swap');
 
 @tailwind base;
@@ -7,100 +6,81 @@
 
 @layer base {
   :root {
-    /* LIGHT THEME */
-    --background: 40 25% 97%;          /* soft warm cream */
-    --foreground: 25 20% 18%;          /* dark brown text */
+    --background: 40 20% 99%;
+    --foreground: 150 15% 15%;
 
-    --card: 0 0% 100%;                 /* white cards */
-    --card-foreground: 25 20% 18%;
+    --card: 0 0% 100%;
+    --card-foreground: 150 15% 15%;
 
     --popover: 0 0% 100%;
-    --popover-foreground: 25 20% 18%;
+    --popover-foreground: 150 15% 15%;
 
-    --primary: 43 90% 50%;             /* honey-gold button */
-    --primary-foreground: 0 0% 100%;   /* white text on button */
+    --primary: 40 80% 50%;
+    --primary-foreground: 30 50% 12%;
 
-    --secondary: 40 20% 92%;           /* soft secondary backgrounds */
-    --secondary-foreground: 25 20% 18%;
+    --secondary: 35 25% 93%;
+    --secondary-foreground: 150 15% 15%;
 
-    --muted: 0 0% 94%;                 /* light gray input backgrounds */
-    --muted-foreground: 0 0% 40%;
+    --muted: 35 20% 96%;
+    --muted-foreground: 150 10% 40%;
 
-    --accent: 38 85% 55%;              /* accent honey tone */
-    --accent-foreground: 0 0% 100%;
+    --accent: 35 30% 90%;
+    --accent-foreground: 150 15% 15%;
 
-    --destructive: 0 84.2% 60.2%;      /* red error / delete */
+    --destructive: 0 84.2% 60.2%;
     --destructive-foreground: 210 40% 98%;
 
-    --border: 30 15% 85%;              /* input borders / card borders */
-    --input: 0 0% 92%;
-    --ring: 43 90% 50%;                 /* focus ring on inputs/buttons */
+    --border: 35 15% 90%;
+    --input: 35 15% 88%;
+    --ring: 40 80% 50%;
 
     --radius: 0.375rem;
 
-    /* FOREST GREEN ACCENTS */
-    --forest: 150 40% 25%;             /* main green accent */
-    --forest-foreground: 45 60% 95%;   /* white-ish text on forest */
+    --forest: 150 40% 25%;
+    --forest-foreground: 45 60% 95%;
+    --honey-dark: 38 85% 42%;
+    --cream: 40 30% 96%;
 
-    --honey-dark: 38 85% 42%;          /* hover for honey button */
-    --cream: 40 30% 96%;               /* light background variants */
-
-    --sidebar-background: 25 35% 12%; /* coffee-dark sidebar/footer */
-    --sidebar-foreground: 40 30% 92%;
-    --sidebar-primary: 43 90% 50%;     /* primary highlight in sidebar */
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: var(--forest);   /* forest used as accent */
-    --sidebar-accent-foreground: var(--forest-foreground);
-    --sidebar-border: 25 35% 20%;
-    --sidebar-ring: 43 90% 50%;
+    --sidebar-background: 0 0% 98%;
+    --sidebar-foreground: 150 15% 20%;
+    --sidebar-primary: 150 40% 25%;
+    --sidebar-primary-foreground: 0 0% 98%;
+    --sidebar-accent: 35 30% 93%;
+    --sidebar-accent-foreground: 150 15% 15%;
+    --sidebar-border: 35 15% 90%;
+    --sidebar-ring: 40 80% 50%;
   }
 
   .dark {
-    /* DARK / FOOTER MODE */
-    --background: 25 35% 12%;          /* coffee dark */
-    --foreground: 40 30% 92%;          /* soft white text */
-
-    --card: 25 35% 15%;                /* dark cards */
-    --card-foreground: 40 30% 92%;
-
-    --popover: 25 35% 15%;
-    --popover-foreground: 40 30% 92%;
-
-    --primary: 43 90% 55%;             /* honey button stays vibrant */
-    --primary-foreground: 0 0% 100%;
-
-    --secondary: 25 35% 20%;
-    --secondary-foreground: 40 30% 92%;
-
-    --muted: 25 35% 25%;
-    --muted-foreground: 40 30% 92%;
-
-    --accent: var(--forest);
-    --accent-foreground: var(--forest-foreground);
-
+    --background: 150 15% 8%;
+    --foreground: 40 20% 93%;
+    --card: 150 15% 10%;
+    --card-foreground: 40 20% 93%;
+    --popover: 150 15% 10%;
+    --popover-foreground: 40 20% 93%;
+    --primary: 40 80% 50%;
+    --primary-foreground: 30 50% 12%;
+    --secondary: 150 20% 15%;
+    --secondary-foreground: 40 20% 93%;
+    --muted: 150 12% 16%;
+    --muted-foreground: 40 10% 60%;
+    --accent: 150 15% 18%;
+    --accent-foreground: 40 20% 93%;
     --destructive: 0 62.8% 30.6%;
     --destructive-foreground: 0 0% 100%;
-
-    --border: 25 35% 20%;
-    --input: 25 35% 20%;
-    --ring: 43 90% 55%;
-
+    --border: 150 12% 18%;
+    --input: 150 12% 18%;
+    --ring: 40 80% 50%;
     --forest: 150 35% 35%;
     --forest-foreground: 45 60% 95%;
-
-    --sidebar-background: 25 35% 12%;
-    --sidebar-foreground: 40 30% 92%;
-    --sidebar-primary: 43 90% 55%;
-    --sidebar-primary-foreground: 0 0% 100%;
-    --sidebar-accent: var(--forest);
-    --sidebar-accent-foreground: var(--forest-foreground);
-    --sidebar-border: 25 35% 20%;
-    --sidebar-ring: 43 90% 55%;
-  }
-
-  /* GLOBAL BUTTONS ROUNDED */
-  button {
-    @apply rounded-lg; /* pill-ish rounded corners for all buttons */
+    --sidebar-background: 150 15% 8%;
+    --sidebar-foreground: 40 20% 93%;
+    --sidebar-primary: 40 80% 50%;
+    --sidebar-primary-foreground: 150 15% 8%;
+    --sidebar-accent: 150 15% 12%;
+    --sidebar-accent-foreground: 40 20% 93%;
+    --sidebar-border: 150 12% 18%;
+    --sidebar-ring: 40 80% 50%;
   }
 }
 
@@ -130,7 +110,7 @@
   }
 
   .btn-hero {
-    @apply inline-flex items-center justify-center rounded-lg px-7 py-3 font-sans font-semibold text-base transition-all duration-200;
+    @apply inline-flex items-center justify-center rounded-md px-7 py-3 font-sans font-semibold text-base transition-all duration-200;
   }
   .btn-hero-primary {
     background: hsl(var(--primary));
@@ -146,46 +126,6 @@
   .btn-hero-outline:hover {
     background: hsl(var(--forest-foreground) / 0.12);
   }
-
-  .section-heading {
-    @apply text-2xl font-bold mb-4;
-    color: hsl(var(--forest));
-  }
-
-  .page-title {
-    @apply text-3xl md:text-5xl font-bold mb-8;
-    color: hsl(var(--foreground));
-  }
-
-  .section-spacing {
-    @apply py-16 md:py-24;
-  }
-
-  .content-container {
-    @apply container mx-auto px-4 max-w-4xl;
-  }
-
-  .wide-container {
-    @apply container mx-auto px-4 max-w-6xl;
-  }
-
-  /* Footer with forest background and white text */
-  footer {
-    background: hsl(var(--forest));
-    color: hsl(var(--forest-foreground));
-  }
-
-  footer a {
-    color: hsl(var(--forest-foreground));
-    transition: color 0.2s ease-in-out;
-  }
-
-  footer a:hover {
-    color: hsl(var(--accent-foreground));
-    text-decoration: underline;
-    text-underline-offset: 2px;
-  }
-}  }
 
   .section-heading {
     @apply text-2xl font-bold mb-4;
