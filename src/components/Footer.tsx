@@ -121,7 +121,7 @@ export function Footer() {
           <span className="mx-2">•</span>
           Developed & Designed by{" "}
           <a
-            href="https://wa.me/256703464913"
+            href="https://wa.me/256760635265"
             target="_blank"
             rel="noopener noreferrer"
             className="text-green-400 hover:text-green-300 font-medium transition-colors"
