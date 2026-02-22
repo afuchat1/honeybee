@@ -30,7 +30,7 @@ export function Footer() {
   }, []);
 
   return (
-    <footer className="bg-[#2B1B0E] text-white"> {/* dark coffee-brown background */}
+    <footer className="bg-foreground text-white">
       <div className="container mx-auto px-4 py-14 md:py-16">
         <div className="grid md:grid-cols-3 gap-10 md:gap-16">
           
@@ -118,6 +118,15 @@ export function Footer() {
         {/* Footer Bottom */}
         <div className="mt-12 pt-6 border-t border-white/15 text-center text-xs opacity-60">
           © {new Date().getFullYear()} {settings.site_name || "Honeybee Ministries"}. All rights reserved.
+          <span className="mx-2">•</span>
+          <a
+            href="https://wa.me/256703464913"
+            target="_blank"
+            rel="noopener noreferrer"
+            className="hover:opacity-100 hover:text-primary transition-colors"
+          >
+            Developed & Designed by Amkaweesi
+          </a>
         </div>
       </div>
     </footer>
