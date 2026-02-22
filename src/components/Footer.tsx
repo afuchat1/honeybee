@@ -17,119 +17,80 @@ export function Footer() {
   const [settings, setSettings] = useState<Record<string, string>>({});
 
   useEffect(() => {
-    supabase
-      .from("site_settings")
-      .select("setting_key, setting_value")
-      .then(({ data }) => {
-        if (data) {
-          const map: Record<string, string> = {};
-          data.forEach((s: any) => { map[s.setting_key] = s.setting_value; });
-          setSettings(map);
-        }
-      });
+    supabase.from("site_settings").select("setting_key, setting_value").then(({ data }) => {
+      if (data) {
+        const map: Record<string, string> = {};
+        data.forEach((s: any) => { map[s.setting_key] = s.setting_value; });
+        setSettings(map);
+      }
+    });
   }, []);
 
   // WhatsApp link with pre-filled message
-  const whatsappLink = `https://wa.me/256760635265?text=Hello%20Amkaweesi!%20I'm%20visiting%20the%20Honeybee%20Ministries%20website%20and%20would%20like%20to%20discuss%20something...`;
+  const whatsappLink = `https://wa.me/256760635265?text=Hello%20Amkaweesi!%20I'm%20visiting%20the%20Honeybee%20Ministries%20website...`;
 
   return (
-    <footer className="bg-sidebar-background text-white">
+    <footer className="bg-forest text-forest-foreground">
       <div className="container mx-auto px-4 py-14 md:py-16">
         <div className="grid md:grid-cols-3 gap-10 md:gap-16">
-          
-          {/* Site Info */}
           <div>
-            <h3 className="font-serif text-xl font-bold mb-4">
-              {settings.site_name || "Honeybee Ministries"}
-            </h3>
+            <h3 className="font-serif text-xl font-bold mb-4">{settings.site_name || "Honeybee Ministries"}</h3>
             <p className="text-sm leading-relaxed opacity-85 mb-6">
               {settings.site_description || "A faith-based organization dedicated to empowering vulnerable children and communities in Eastern Uganda."}
             </p>
-            <p className="text-xs opacity-60 italic leading-relaxed">
-              "Together we build a hive of hope — one act of kindness at a time."
-            </p>
+            <p className="text-xs opacity-60 italic leading-relaxed">"Together we build a hive of hope — one act of kindness at a time."</p>
           </div>
 
-          {/* Quick Links */}
           <div>
             <h4 className="font-serif text-base font-semibold mb-4">Quick Links</h4>
             <ul className="space-y-2 text-sm">
               {quickLinks.map((link) => (
                 <li key={link.path}>
-                  <Link
-                    to={link.path}
-                    className="text-amber-300 opacity-80 hover:opacity-100 hover:text-amber-200 hover:underline hover:underline-offset-2 transition-all"
-                  >
-                    {link.name}
-                  </Link>
+                  <Link to={link.path} className="opacity-80 hover:opacity-100 transition-opacity">{link.name}</Link>
                 </li>
               ))}
             </ul>
           </div>
 
-          {/* Contact Info */}
           <div>
             <h4 className="font-serif text-base font-semibold mb-4">Contact</h4>
             <ul className="space-y-3 text-sm">
               <li className="flex items-start gap-2">
                 <MapPin size={15} className="mt-0.5 flex-shrink-0 opacity-80" />
-                <span className="opacity-85">
-                  {settings.location || "Naminya Ward, Wakisi Division, Buikwe District, Uganda"}
-                </span>
+                <span className="opacity-85">{settings.location || "Naminya Ward, Wakisi Division, Buikwe District, Uganda"}</span>
               </li>
               <li className="flex items-center gap-2">
                 <Mail size={15} className="flex-shrink-0 opacity-80" />
-                <a
-                  href={`mailto:${settings.contact_email || "honeybeeministriesug@gmail.com"}`}
-                  className="text-amber-300 opacity-80 hover:opacity-100 hover:text-amber-200 hover:underline hover:underline-offset-2 transition-all"
-                >
+                <a href={`mailto:${settings.contact_email || "honeybeeministriesug@gmail.com"}`} className="opacity-85 hover:opacity-100">
                   {settings.contact_email || "honeybeeministriesug@gmail.com"}
                 </a>
               </li>
             </ul>
-
-            {/* Social Links */}
             <div className="mt-5">
               <p className="text-xs font-medium opacity-70 mb-2">Follow us</p>
               <div className="flex gap-4 text-sm">
                 {(settings.instagram_url || "https://instagram.com/honeybeeministriesug") && (
-                  <a
-                    href={settings.instagram_url || "https://instagram.com/honeybeeministriesug"}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-amber-300 opacity-80 hover:opacity-100 hover:text-amber-200 hover:underline hover:underline-offset-2 transition-all"
-                  >
-                    Instagram
-                  </a>
+                  <a href={settings.instagram_url || "https://instagram.com/honeybeeministriesug"} target="_blank" rel="noopener noreferrer" className="opacity-80 hover:opacity-100">Instagram</a>
                 )}
                 {(settings.facebook_url || "https://facebook.com/honeybeeministriesug") && (
-                  <a
-                    href={settings.facebook_url || "https://facebook.com/honeybeeministriesug"}
-                    target="_blank"
-                    rel="noopener noreferrer"
-                    className="text-amber-300 opacity-80 hover:opacity-100 hover:text-amber-200 hover:underline hover:underline-offset-2 transition-all"
-                  >
-                    Facebook
-                  </a>
+                  <a href={settings.facebook_url || "https://facebook.com/honeybeeministriesug"} target="_blank" rel="noopener noreferrer" className="opacity-80 hover:opacity-100">Facebook</a>
                 )}
               </div>
             </div>
           </div>
-
         </div>
 
-        {/* Footer Bottom – separated lines */}
-        <div className="mt-12 pt-6 border-t border-white/15 text-center text-xs">
-          <div className="opacity-60">
+        <div className="mt-12 pt-6 border-t border-forest-foreground/15 text-center text-xs opacity-60">
+          <div>
             © {new Date().getFullYear()} {settings.site_name || "Honeybee Ministries"}. All rights reserved.
           </div>
-          <div className="mt-2 opacity-75">
+          <div className="mt-2">
             Developed & Designed by{" "}
             <a
               href={whatsappLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="text-amber-300 hover:text-amber-200 font-medium hover:underline hover:underline-offset-2 transition-all"
+              className="hover:opacity-100 transition-opacity"
             >
               Amkaweesi
             </a>
