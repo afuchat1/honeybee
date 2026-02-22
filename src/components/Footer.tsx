@@ -23,14 +23,16 @@ export function Footer() {
       .then(({ data }) => {
         if (data) {
           const map: Record<string, string> = {};
-          data.forEach((s: any) => { map[s.setting_key] = s.setting_value; });
+          data.forEach((s: any) => {
+            map[s.setting_key] = s.setting_value;
+          });
           setSettings(map);
         }
       });
   }, []);
 
   return (
-    <footer className="bg-sidebar-background text-sidebar-foreground">
+    <footer className="bg-[hsl(25,30%,15%)] text-[hsl(40,20%,93%)]">
       <div className="container mx-auto px-4 py-14 md:py-16">
         <div className="grid md:grid-cols-3 gap-10 md:gap-16">
           
@@ -55,7 +57,7 @@ export function Footer() {
                 <li key={link.path}>
                   <Link
                     to={link.path}
-                    className="opacity-80 hover:opacity-100 hover:text-primary transition-opacity"
+                    className="opacity-80 hover:opacity-100 hover:text-[hsl(38,85%,42%)] transition-colors"
                   >
                     {link.name}
                   </Link>
@@ -78,7 +80,7 @@ export function Footer() {
                 <Mail size={15} className="flex-shrink-0 opacity-80" />
                 <a
                   href={`mailto:${settings.contact_email || "honeybeeministriesug@gmail.com"}`}
-                  className="opacity-85 hover:opacity-100 hover:text-primary transition-colors"
+                  className="opacity-85 hover:opacity-100 hover:text-[hsl(38,85%,42%)] transition-colors"
                 >
                   {settings.contact_email || "honeybeeministriesug@gmail.com"}
                 </a>
@@ -94,7 +96,7 @@ export function Footer() {
                     href={settings.instagram_url || "https://instagram.com/honeybeeministriesug"}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="opacity-80 hover:opacity-100 hover:text-primary transition-colors"
+                    className="opacity-80 hover:opacity-100 hover:text-[hsl(38,85%,42%)] transition-colors"
                   >
                     Instagram
                   </a>
@@ -104,7 +106,7 @@ export function Footer() {
                     href={settings.facebook_url || "https://facebook.com/honeybeeministriesug"}
                     target="_blank"
                     rel="noopener noreferrer"
-                    className="opacity-80 hover:opacity-100 hover:text-primary transition-colors"
+                    className="opacity-80 hover:opacity-100 hover:text-[hsl(38,85%,42%)] transition-colors"
                   >
                     Facebook
                   </a>
@@ -116,7 +118,7 @@ export function Footer() {
         </div>
 
         {/* Footer Bottom */}
-        <div className="mt-12 pt-6 border-t border-sidebar-border/15 text-center text-xs opacity-60">
+        <div className="mt-12 pt-6 border-t border-[hsl(25,30%,25%)] text-center text-xs opacity-60">
           © {new Date().getFullYear()} {settings.site_name || "Honeybee Ministries"}. All rights reserved.
         </div>
       </div>
