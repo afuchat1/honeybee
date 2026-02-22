@@ -90,7 +90,7 @@ export function Footer() {
               href={whatsappLink}
               target="_blank"
               rel="noopener noreferrer"
-              className="hover:opacity-100 transition-opacity"
+              className="text-amber-300 font-bold hover:text-amber-200 hover:underline transition-all"
             >
               Amkaweesi
             </a>
