@@ -23,16 +23,14 @@ export function Footer() {
       .then(({ data }) => {
         if (data) {
           const map: Record<string, string> = {};
-          data.forEach((s: any) => {
-            map[s.setting_key] = s.setting_value;
-          });
+          data.forEach((s: any) => { map[s.setting_key] = s.setting_value; });
           setSettings(map);
         }
       });
   }, []);
 
   return (
-    <footer className="bg-background text-foreground">
+    <footer className="bg-foreground text-white">
       <div className="container mx-auto px-4 py-14 md:py-16">
         <div className="grid md:grid-cols-3 gap-10 md:gap-16">
           
@@ -118,7 +116,7 @@ export function Footer() {
         </div>
 
         {/* Footer Bottom */}
-        <div className="mt-12 pt-6 border-t border-border/15 text-center text-xs opacity-60">
+        <div className="mt-12 pt-6 border-t border-white/15 text-center text-xs opacity-60">
           © {new Date().getFullYear()} {settings.site_name || "Honeybee Ministries"}. All rights reserved.
         </div>
       </div>
