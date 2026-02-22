@@ -30,7 +30,7 @@ export function Footer() {
   }, []);
 
   return (
-    <footer className="bg-foreground text-white">
+    <footer className="bg-[#2B1B0E] text-white"> {/* dark coffee-brown background */}
       <div className="container mx-auto px-4 py-14 md:py-16">
         <div className="grid md:grid-cols-3 gap-10 md:gap-16">
           
