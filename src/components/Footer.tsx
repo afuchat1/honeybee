@@ -29,6 +29,9 @@ export function Footer() {
       });
   }, []);
 
+  // WhatsApp link with pre-filled message
+  const whatsappLink = `https://wa.me/256760635265?text=Hello%20Amkaweesi!%20I'm%20visiting%20the%20Honeybee%20Ministries%20website%20and%20would%20like%20to%20discuss%20something...`;
+
   return (
     <footer className="bg-foreground text-white">
       <div className="container mx-auto px-4 py-14 md:py-16">
@@ -115,19 +118,22 @@ export function Footer() {
 
         </div>
 
-        {/* Footer Bottom */}
-        <div className="mt-12 pt-6 border-t border-white/15 text-center text-xs opacity-60">
-          © {new Date().getFullYear()} {settings.site_name || "Honeybee Ministries"}. All rights reserved.
-          <span className="mx-2">•</span>
-          Developed & Designed by{" "}
-          <a
-            href="https://wa.me/256760635265"
-            target="_blank"
-            rel="noopener noreferrer"
-            className="text-green-400 hover:text-green-300 font-medium transition-colors"
-          >
-            Amkaweesi
-          </a>
+        {/* Footer Bottom – separated lines */}
+        <div className="mt-12 pt-6 border-t border-white/15 text-center text-xs">
+          <div className="opacity-60">
+            © {new Date().getFullYear()} {settings.site_name || "Honeybee Ministries"}. All rights reserved.
+          </div>
+          <div className="mt-2 opacity-75">
+            Developed & Designed by{" "}
+            <a
+              href={whatsappLink}
+              target="_blank"
+              rel="noopener noreferrer"
+              className="text-green-400 hover:text-green-300 font-medium transition-colors"
+            >
+              Amkaweesi
+            </a>
+          </div>
         </div>
       </div>
     </footer>
