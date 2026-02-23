@@ -8,6 +8,7 @@ const links = [
   { name: "About", path: "/about" },
   { name: "Our Story", path: "/our-story" },
   { name: "Programs", path: "/programs" },
+  { name: "Impact Stories", path: "/impact" },
   { name: "Vision 2025–2030", path: "/vision" },
   { name: "Gallery", path: "/gallery" },
   { name: "Get Involved", path: "/get-involved" },

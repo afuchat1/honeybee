@@ -19,6 +19,8 @@ interface Story {
   profile_image_url: string | null;
   is_featured: boolean;
   sort_order: number;
+  slug: string | null;
+  created_at: string;
 }
 
 interface GalleryImage {
@@ -29,7 +31,10 @@ interface GalleryImage {
   sort_order: number;
 }
 
-const emptyForm = { title: "", content: "", short_description: "", is_featured: false, sort_order: 0 };
+const toSlug = (title: string) =>
+  title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
+
+const emptyForm = { title: "", content: "", short_description: "", is_featured: false, sort_order: 0, slug: "" };
 
 const ImpactManager = () => {
   const { toast } = useToast();
@@ -55,7 +60,7 @@ const ImpactManager = () => {
 
   const openEdit = (item: Story) => {
     setEditing(item);
-    setForm({ title: item.title, content: item.content, short_description: item.short_description || "", is_featured: item.is_featured, sort_order: item.sort_order });
+    setForm({ title: item.title, content: item.content, short_description: item.short_description || "", is_featured: item.is_featured, sort_order: item.sort_order, slug: item.slug || "" });
     setDialogOpen(true);
   };
 
@@ -117,12 +122,14 @@ const ImpactManager = () => {
   };
 
   const handleSave = async () => {
+    const slug = form.slug || toSlug(form.title);
+    const payload = { ...form, slug };
     if (editing) {
-      const { error } = await supabase.from("impact_stories").update(form).eq("id", editing.id);
+      const { error } = await supabase.from("impact_stories").update(payload).eq("id", editing.id);
       if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
       await logActivity("updated", "impact_story", editing.id, { title: form.title });
     } else {
-      const { error } = await supabase.from("impact_stories").insert(form);
+      const { error } = await supabase.from("impact_stories").insert(payload);
       if (error) { toast({ title: "Error", description: error.message, variant: "destructive" }); return; }
       await logActivity("created", "impact_story", undefined, { title: form.title });
     }
@@ -228,6 +235,11 @@ const ImpactManager = () => {
             <div className="flex items-center gap-3">
               <Switch checked={form.is_featured} onCheckedChange={(v) => setForm({ ...form, is_featured: v })} />
               <Label>Featured Story</Label>
+            </div>
+            <div>
+              <Label>Slug (URL-friendly name)</Label>
+              <Input value={form.slug} onChange={(e) => setForm({ ...form, slug: e.target.value })} className="mt-1" placeholder="auto-generated-from-title" />
+              <p className="text-xs text-muted-foreground mt-1">Leave empty to auto-generate from title</p>
             </div>
             <div>
               <Label>Sort Order</Label>

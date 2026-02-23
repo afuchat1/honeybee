@@ -11,6 +11,7 @@ interface Story {
   profile_image_url: string | null;
   short_description: string;
   is_featured: boolean;
+  slug: string | null;
 }
 
 interface GalleryImage {
@@ -20,24 +21,48 @@ interface GalleryImage {
 }
 
 const StoryDetail = () => {
-  const { id } = useParams<{ id: string }>();
+  const { slug } = useParams<{ slug: string }>();
   const [story, setStory] = useState<Story | null>(null);
   const [gallery, setGallery] = useState<GalleryImage[]>([]);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetch = async () => {
-      if (!id) return;
-      const [storyRes, galleryRes] = await Promise.all([
-        supabase.from("impact_stories").select("*").eq("id", id).single(),
-        supabase.from("story_gallery").select("*").eq("story_id", id).order("sort_order"),
-      ]);
-      setStory(storyRes.data as Story | null);
-      setGallery((galleryRes.data as GalleryImage[]) || []);
+    const fetchStory = async () => {
+      if (!slug) return;
+
+      // Try slug first, then fall back to ID
+      let storyData: Story | null = null;
+      const { data: bySlug } = await supabase
+        .from("impact_stories")
+        .select("*")
+        .eq("slug", slug)
+        .maybeSingle();
+      
+      if (bySlug) {
+        storyData = bySlug as Story;
+      } else {
+        // Fallback: try as UUID
+        const { data: byId } = await supabase
+          .from("impact_stories")
+          .select("*")
+          .eq("id", slug)
+          .maybeSingle();
+        storyData = byId as Story | null;
+      }
+
+      if (storyData) {
+        setStory(storyData);
+        const { data: galleryData } = await supabase
+          .from("story_gallery")
+          .select("*")
+          .eq("story_id", storyData.id)
+          .order("sort_order");
+        setGallery((galleryData as GalleryImage[]) || []);
+      }
       setLoading(false);
     };
-    fetch();
-  }, [id]);
+    fetchStory();
+  }, [slug]);
 
   if (loading) return <div className="section-spacing text-center text-muted-foreground">Loading...</div>;
   if (!story) return <div className="section-spacing text-center text-muted-foreground">Story not found.</div>;
@@ -80,7 +105,7 @@ const StoryDetail = () => {
           ))}
         </div>
 
-        {/* Person Gallery */}
+        {/* Gallery — only this story's images */}
         {gallery.length > 0 && (
           <div>
             <h2 className="section-heading">Gallery</h2>
@@ -91,6 +116,11 @@ const StoryDetail = () => {
                   {img.caption && <p className="text-xs text-muted-foreground mt-2 px-1">{img.caption}</p>}
                 </div>
               ))}
+            </div>
+            <div className="mt-6 text-center">
+              <Link to="/gallery" className="text-sm text-primary font-semibold hover:underline">
+                View Full Gallery →
+              </Link>
             </div>
           </div>
         )}
