@@ -6,6 +6,7 @@ import { Label } from "@/components/ui/label";
 import { useToast } from "@/hooks/use-toast";
 import { logActivity } from "@/lib/logActivity";
 import { Save } from "lucide-react";
+import NotificationEmailsManager from "./NotificationEmailsManager";
 
 interface Setting {
   id: string;
@@ -50,6 +51,7 @@ const SettingsManager = () => {
     contact_email: "Contact Email",
     contact_phone: "Contact Phone",
     contact_address: "Contact Address",
+    location: "Location",
     facebook_url: "Facebook URL",
     twitter_url: "Twitter URL",
     instagram_url: "Instagram URL",
@@ -65,20 +67,25 @@ const SettingsManager = () => {
         </Button>
       </div>
 
-      <div className="bg-background rounded-lg border border-border p-5 space-y-5 max-w-2xl">
-        {settings.map((setting) => (
-          <div key={setting.id}>
-            <Label className="text-sm">{labels[setting.setting_key] || setting.setting_key}</Label>
-            <Input
-              value={values[setting.setting_key] || ""}
-              onChange={(e) => setValues({ ...values, [setting.setting_key]: e.target.value })}
-              className="mt-1"
-            />
-          </div>
-        ))}
-        {settings.length === 0 && (
-          <p className="text-sm text-muted-foreground">No settings configured.</p>
-        )}
+      <div className="space-y-6">
+        <div className="bg-background rounded-lg border border-border p-5 space-y-5 max-w-2xl">
+          {settings.map((setting) => (
+            <div key={setting.id}>
+              <Label className="text-sm">{labels[setting.setting_key] || setting.setting_key}</Label>
+              <Input
+                value={values[setting.setting_key] || ""}
+                onChange={(e) => setValues({ ...values, [setting.setting_key]: e.target.value })}
+                className="mt-1"
+              />
+            </div>
+          ))}
+          {settings.length === 0 && (
+            <p className="text-sm text-muted-foreground">No settings configured.</p>
+          )}
+        </div>
+
+        {/* Notification emails */}
+        <NotificationEmailsManager />
       </div>
     </div>
   );

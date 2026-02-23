@@ -179,6 +179,7 @@ export type Database = {
           is_featured: boolean
           profile_image_url: string | null
           short_description: string
+          slug: string | null
           sort_order: number
           title: string
           updated_at: string
@@ -191,6 +192,7 @@ export type Database = {
           is_featured?: boolean
           profile_image_url?: string | null
           short_description?: string
+          slug?: string | null
           sort_order?: number
           title: string
           updated_at?: string
@@ -203,9 +205,31 @@ export type Database = {
           is_featured?: boolean
           profile_image_url?: string | null
           short_description?: string
+          slug?: string | null
           sort_order?: number
           title?: string
           updated_at?: string
+        }
+        Relationships: []
+      }
+      notification_emails: {
+        Row: {
+          created_at: string
+          email: string
+          id: string
+          is_enabled: boolean
+        }
+        Insert: {
+          created_at?: string
+          email: string
+          id?: string
+          is_enabled?: boolean
+        }
+        Update: {
+          created_at?: string
+          email?: string
+          id?: string
+          is_enabled?: boolean
         }
         Relationships: []
       }

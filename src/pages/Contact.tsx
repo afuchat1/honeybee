@@ -56,6 +56,10 @@ const Contact = () => {
     });
     setSubmitting(false);
     if (error) { toast({ title: "Error", description: "Failed to send message.", variant: "destructive" }); return; }
+    // Notify via edge function (fire & forget)
+    supabase.functions.invoke("notify-contact", {
+      body: { name: result.data.name, email: result.data.email, subject: result.data.subject, message: result.data.message },
+    }).catch(() => {});
     toast({ title: "Message sent", description: "Thank you for reaching out. We will get back to you soon." });
     setForm({ name: "", email: "", subject: "", message: "" });
   };
