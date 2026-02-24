@@ -46,7 +46,7 @@ serve(async (req) => {
     const recipients = emails.map((e: any) => e.email);
 
     const { data, error } = await resend.emails.send({
-      from: "Honeybee Ministries <onboarding@resend.dev>",
+      from: "Honeybee Ministries <noreply@afuchat.com>",
       to: recipients,
       subject: `Contact Form: ${subject}`,
       html: `
