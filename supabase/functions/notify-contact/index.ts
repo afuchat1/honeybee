@@ -1,14 +1,16 @@
-import { serve } from "https://deno.land/std@0.168.0/http/server.ts";
+import { serve } from "https://deno.land/std@0.190.0/http/server.ts";
 import { createClient } from "https://esm.sh/@supabase/supabase-js@2";
+import { Resend } from "npm:resend@2.0.0";
 
 const corsHeaders = {
   "Access-Control-Allow-Origin": "*",
-  "Access-Control-Allow-Headers": "authorization, x-client-info, apikey, content-type",
+  "Access-Control-Allow-Headers":
+    "authorization, x-client-info, apikey, content-type, x-supabase-client-platform, x-supabase-client-platform-version, x-supabase-client-runtime, x-supabase-client-runtime-version",
 };
 
 serve(async (req) => {
   if (req.method === "OPTIONS") {
-    return new Response("ok", { headers: corsHeaders });
+    return new Response(null, { headers: corsHeaders });
   }
 
   try {
@@ -16,7 +18,17 @@ serve(async (req) => {
 
     const supabaseUrl = Deno.env.get("SUPABASE_URL")!;
     const serviceKey = Deno.env.get("SUPABASE_SERVICE_ROLE_KEY")!;
+    const resendKey = Deno.env.get("RESEND_API_KEY");
+
+    if (!resendKey) {
+      console.error("RESEND_API_KEY not configured");
+      return new Response(JSON.stringify({ sent: false, reason: "no_api_key" }), {
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
     const client = createClient(supabaseUrl, serviceKey);
+    const resend = new Resend(resendKey);
 
     // Get enabled notification emails
     const { data: emails } = await client
@@ -25,20 +37,40 @@ serve(async (req) => {
       .eq("is_enabled", true);
 
     if (!emails || emails.length === 0) {
+      console.log("No notification emails configured");
       return new Response(JSON.stringify({ sent: false, reason: "no_emails" }), {
         headers: { ...corsHeaders, "Content-Type": "application/json" },
       });
     }
 
-    // Send email via Supabase's built-in email (using the auth admin API to send a custom email isn't available,
-    // so we'll use a simple approach: log the notification. For actual email delivery, 
-    // the admin can integrate with an external service.)
-    // For now, we store a notification record that the admin can see.
-    console.log(`Contact notification: ${name} (${email}) - ${subject}`);
-    console.log(`Would send to: ${emails.map((e: any) => e.email).join(", ")}`);
+    const recipients = emails.map((e: any) => e.email);
 
+    const { data, error } = await resend.emails.send({
+      from: "Honeybee Ministries <onboarding@resend.dev>",
+      to: recipients,
+      subject: `Contact Form: ${subject}`,
+      html: `
+        <h2>New Contact Form Message</h2>
+        <p><strong>From:</strong> ${name} (${email})</p>
+        <p><strong>Subject:</strong> ${subject}</p>
+        <hr />
+        <p>${message.replace(/\n/g, "<br />")}</p>
+        <hr />
+        <p style="color: #999; font-size: 12px;">This message was sent via the Honeybee Ministries contact form.</p>
+      `,
+    });
+
+    if (error) {
+      console.error("Resend error:", error);
+      return new Response(JSON.stringify({ sent: false, error: error.message }), {
+        status: 500,
+        headers: { ...corsHeaders, "Content-Type": "application/json" },
+      });
+    }
+
+    console.log("Email sent successfully to:", recipients.join(", "));
     return new Response(
-      JSON.stringify({ sent: true, recipients: emails.length }),
+      JSON.stringify({ sent: true, recipients: recipients.length }),
       { headers: { ...corsHeaders, "Content-Type": "application/json" } }
     );
   } catch (err) {
