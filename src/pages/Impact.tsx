@@ -1,360 +1,139 @@
 import { useEffect, useState } from "react";
-import { supabase } from "@/integrations/supabase/client";
 import { Link } from "react-router-dom";
-import { Heart, GraduationCap, Wrench, Flame, ArrowRight } from "lucide-react";
+import { supabase } from "@/integrations/supabase/client";
+import { ArrowRight, User } from "lucide-react";
 
-const programsList = [
-  {
-    icon: Heart,
-    title: "Special Needs Outreach",
-    desc: "Supporting children with special needs through inclusive education, mentorship, therapy support, and practical skills training.",
-  },
-  {
-    icon: GraduationCap,
-    title: "Rising Star Academy",
-    desc: "Mentorship programs guiding children, youth, and young adults in education, career, and personal development.",
-  },
-  {
-    icon: Wrench,
-    title: "Skills Centre",
-    desc: "Training in practical trades — baking, hairdressing, welding, automotive — empowering beneficiaries with income-generating skills.",
-  },
-  {
-    icon: Flame,
-    title: "Healing Circles & Campfire",
-    desc: "Community gatherings for worship, testimony, and trauma healing — creating safe spaces for restoration and hope.",
-  },
-];
+interface Story {
+  id: string;
+  title: string;
+  content: string;
+  image_url: string | null;
+  profile_image_url: string | null;
+  short_description: string;
+  is_featured: boolean;
+  sort_order: number;
+  slug: string | null;
+  created_at: string;
+}
 
-// Tiny transparent placeholder to prevent broken image icons + layout shift
-const PLACEHOLDER_IMG =
-  "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E";
+const toSlug = (title: string) =>
+  title.toLowerCase().replace(/[^a-z0-9]+/g, "-").replace(/(^-|-$)/g, "");
 
-const Index = () => {
-  const [siteImages, setSiteImages] = useState<Record<string, string>>({});
-  const [imagesLoaded, setImagesLoaded] = useState(false);
+const Impact = () => {
+  const [stories, setStories] = useState<Story[]>([]);
+  const [loading, setLoading] = useState(true);
 
   useEffect(() => {
-    const fetchImages = async () => {
-      try {
-        const { data, error } = await supabase
-          .from("site_images")
-          .select("image_key, image_url");
-
-        if (error) {
-          console.error("Error fetching site images:", error);
-          return;
-        }
-
-        if (data) {
-          const map: Record<string, string> = {};
-          data.forEach((img) => {
-            if (img.image_key && img.image_url) {
-              map[img.image_key] = img.image_url;
-            }
-          });
-          setSiteImages(map);
-        }
-      } catch (err) {
-        console.error("Fetch images failed:", err);
-      } finally {
-        setImagesLoaded(true);
-      }
+    const fetchStories = async () => {
+      const { data } = await supabase.from("impact_stories").select("*").order("sort_order");
+      setStories((data as Story[]) || []);
+      setLoading(false);
     };
-
-    fetchImages();
+    fetchStories();
   }, []);
 
-  const getImage = (key: string): string => {
-    if (!imagesLoaded) return PLACEHOLDER_IMG;
-    return siteImages[key] || PLACEHOLDER_IMG;
-  };
-
   return (
-    <>
-      <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
-        {!imagesLoaded && (
-          <div className="absolute inset-0 bg-gray-200 animate-pulse z-0" />
+    <section className="section-spacing">
+      <div className="content-container">
+        {/* Hero banner */}
+        <div className="relative rounded-2xl overflow-hidden mb-12 bg-accent/30">
+          <div className="px-8 py-14 md:py-20">
+            <p className="text-xs uppercase tracking-widest text-primary font-semibold mb-2">Home • Impact Stories</p>
+            <h1 className="text-4xl md:text-5xl font-serif font-bold text-foreground">Impact Stories</h1>
+          </div>
+        </div>
+
+        {loading ? (
+          <div className="text-center py-8 text-muted-foreground">Loading stories...</div>
+        ) : stories.length > 0 ? (
+          <div className="space-y-10 mb-20">
+            {stories.map((story) => {
+              const storySlug = story.slug || toSlug(story.title);
+              const dateStr = new Date(story.created_at).toLocaleDateString("en-US", {
+                year: "numeric", month: "long", day: "numeric",
+              });
+              return (
+                <article
+                  key={story.id}
+                  className="bg-background rounded-2xl border border-border/60 overflow-hidden hover:border-primary/30 transition-colors"
+                >
+                  <div className="p-6 md:p-8">
+                    <p className="text-sm text-primary font-semibold mb-3">{dateStr}</p>
+                    <h2 className="text-xl md:text-2xl font-serif font-bold text-foreground mb-4">
+                      {story.title}
+                    </h2>
+
+                    {/* Cover image */}
+                    {story.image_url && (
+                      <div className="rounded-xl overflow-hidden mb-5 border border-primary/20">
+                        <img
+                          src={story.image_url}
+                          alt={story.title}
+                          className="w-full max-h-80 object-cover"
+                          loading="lazy"
+                        />
+                      </div>
+                    )}
+
+                    {/* Profile + short desc */}
+                    <div className="flex items-start gap-4 mb-5">
+                      {story.profile_image_url ? (
+                        <img
+                          src={story.profile_image_url}
+                          alt={story.title}
+                          className="w-14 h-14 rounded-full object-cover flex-shrink-0 border-2 border-primary/20"
+                        />
+                      ) : (
+                        <div className="w-14 h-14 rounded-full bg-muted flex items-center justify-center flex-shrink-0">
+                          <User size={20} className="text-muted-foreground/50" />
+                        </div>
+                      )}
+                      <p className="text-muted-foreground leading-relaxed line-clamp-3 text-sm">
+                        {story.short_description || story.content.substring(0, 200) + "..."}
+                      </p>
+                    </div>
+
+                    <Link
+                      to={`/impact/${storySlug}`}
+                      className="inline-flex items-center gap-2 text-primary font-semibold hover:underline underline-offset-4"
+                    >
+                      Read More <ArrowRight size={16} />
+                    </Link>
+                  </div>
+                </article>
+              );
+            })}
+          </div>
+        ) : (
+          <div className="text-center py-16 text-muted-foreground">
+            No stories yet. Check back soon!
+          </div>
         )}
-        <img
-          src={getImage("hero_background")}
-          alt="Honeybee Ministries community in Eastern Uganda"
-          className="absolute inset-0 w-full h-full object-cover transition-opacity duration-500"
-          loading="eager"
-        />
-        <div className="hero-overlay" />
-        <div className="relative z-10 text-center px-4 max-w-3xl mx-auto hero-text">
-          <h1 className="text-4xl md:text-6xl font-bold mb-4 leading-tight">
-            Welcome to<br />Honeybee Ministries
-          </h1>
-          <p className="text-xl md:text-2xl mb-2 font-light italic font-serif">
-            "Together we build a hive of hope"
-          </p>
-          <p className="text-sm mb-4 opacity-70">Ecclesiastes 4:9–10</p>
-          <p className="text-base md:text-lg mb-10 max-w-2xl mx-auto opacity-90 leading-relaxed">
-            Creating a world where children with special needs, vulnerable youths, and families in pain can find healing, purpose, and empowerment.
-          </p>
-          <div className="flex flex-wrap justify-center gap-3">
-            <Link to="/get-involved" className="btn-hero btn-hero-primary">
-              Join the Hive
-            </Link>
-            <Link to="/our-story" className="btn-hero btn-hero-outline">
-              Our Story
-            </Link>
-            <Link
-              to="/contact"
-              className="btn-hero btn-hero-primary"
-              style={{ background: "hsl(25 70% 50%)" }}
-            >
-              Donate
-            </Link>
-          </div>
-        </div>
-      </section>
 
-      <section className="section-spacing">
-        <div className="wide-container">
-          <div className="grid md:grid-cols-2 gap-10 md:gap-16 items-center">
-            <div className="rounded-2xl overflow-hidden relative">
-              {!imagesLoaded && (
-                <div className="absolute inset-0 bg-gray-200 animate-pulse rounded-2xl z-10" />
-              )}
-              <img
-                src={getImage("about_preview")}
-                alt="Honeybee community members"
-                className="w-full h-[380px] object-cover transition-opacity duration-500"
-                loading="lazy"
-              />
-            </div>
-            <div>
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-5">
-                About Honeybee Ministries
-              </h2>
-              <p className="text-muted-foreground leading-relaxed mb-4">
-                Founded on 29th August 2025 in Naminya Ward, Wakisi Division, Buikwe District, Uganda — Honeybee Ministries is a Christian-founded, interdenominational organization dedicated to nurturing, empowering, and restoring hope in communities, especially among children with special needs and vulnerable groups.
-              </p>
-              <p className="text-muted-foreground leading-relaxed mb-6">
-                Our name reflects our belief that like honeybees, we thrive when we work together — each person contributing their unique gifts to build something greater than themselves.
-              </p>
-              <Link
-                to="/our-story"
-                className="inline-flex items-center gap-2 text-primary font-semibold hover:underline underline-offset-4"
-              >
-                Read Our Story <ArrowRight size={16} />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="section-spacing bg-muted/40">
-        <div className="wide-container">
-          <div className="text-center mb-14">
-            <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-4">
-              What We Do
-            </h2>
-            <p className="text-muted-foreground text-lg max-w-2xl mx-auto">
-              Our programs are designed to meet the holistic needs of children, youths, and communities in Eastern Uganda.
-            </p>
-          </div>
-          <div className="grid sm:grid-cols-2 gap-x-10 gap-y-12">
-            {programsList.map((p) => (
-              <div key={p.title} className="flex gap-4">
-                <div className="w-12 h-12 rounded-full bg-primary/10 flex items-center justify-center flex-shrink-0 mt-1">
-                  <p.icon className="w-5 h-5 text-primary" strokeWidth={1.5} />
-                </div>
-                <div>
-                  <h3 className="text-lg font-bold text-foreground mb-2 font-serif">
-                    {p.title}
-                  </h3>
-                  <p className="text-muted-foreground leading-relaxed text-sm">
-                    {p.desc}
-                  </p>
-                </div>
-              </div>
-            ))}
-          </div>
-          <div className="text-center mt-12">
-            <Link
-              to="/programs"
-              className="inline-flex items-center gap-2 text-primary font-semibold hover:underline underline-offset-4"
-            >
-              View All Programs <ArrowRight size={16} />
-            </Link>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-2 bg-background">
-        <div className="wide-container">
-          <div className="grid grid-cols-3 gap-2 md:gap-3">
-            {["programs_preview", "skills_preview", "impact_preview"].map((key) => (
-              <div key={key} className="rounded-xl overflow-hidden aspect-[4/3] relative">
-                {!imagesLoaded && (
-                  <div className="absolute inset-0 bg-gray-200 animate-pulse rounded-xl z-10" />
-                )}
-                <img
-                  src={getImage(key)}
-                  alt={`${key.replace("_preview", "").replace("-", " ")} preview`}
-                  className="w-full h-full object-cover transition-opacity duration-500"
-                  loading="lazy"
-                />
-              </div>
-            ))}
-          </div>
-        </div>
-      </section>
-
-      <section className="py-16 md:py-20 bg-forest text-forest-foreground">
-        <div className="wide-container text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-10">Our Impact So Far</h2>
-          <div className="grid grid-cols-2 md:grid-cols-4 gap-8">
+        {/* Progress Highlights */}
+        <div className="mb-20">
+          <h2 className="section-heading">Progress Highlights</h2>
+          <div className="grid sm:grid-cols-2 md:grid-cols-4 gap-8 mt-8">
             {[
-              { value: "200+", label: "Children Supported" },
-              { value: "50+", label: "Youth Mentored" },
-              { value: "5", label: "Community Programs" },
-              { value: "3", label: "Districts Reached" },
-            ].map((s) => (
-              <div key={s.label}>
-                <p className="text-4xl md:text-5xl font-bold font-serif mb-1">
-                  {s.value}
-                </p>
-                <p className="text-sm opacity-80">{s.label}</p>
+              { number: "500+", label: "Children supported" },
+              { number: "200+", label: "Youth mentored" },
+              { number: "15+", label: "Communities reached" },
+              { number: "4", label: "Active programs" },
+            ].map((stat) => (
+              <div key={stat.label} className="text-center py-6">
+                <div className="text-3xl md:text-4xl font-serif font-bold text-forest mb-2">{stat.number}</div>
+                <div className="text-sm text-muted-foreground">{stat.label}</div>
               </div>
             ))}
           </div>
-          <Link
-            to="/impact"
-            className="inline-flex items-center gap-2 mt-10 font-semibold opacity-90 hover:opacity-100 hover:underline underline-offset-4"
-          >
-            Read Impact Stories <ArrowRight size={16} />
-          </Link>
         </div>
-      </section>
 
-      <section className="section-spacing">
-        <div className="wide-container">
-          <div className="grid md:grid-cols-2 gap-10 md:gap-16 items-center">
-            <div>
-              <p className="text-primary font-semibold text-sm uppercase tracking-wider mb-3">
-                Our Founder
-              </p>
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-5">
-                Esther Awori
-              </h2>
-              <p className="text-muted-foreground leading-relaxed mb-4">
-                Esther Awori's journey to founding Honeybee Ministries was born out of personal experience with pain, faith, and a deep conviction that every child deserves a chance.
-              </p>
-              <p className="text-muted-foreground leading-relaxed mb-6">
-                From a challenging childhood to becoming a beacon of hope for hundreds of vulnerable children in Eastern Uganda, Esther's life is a testament to the power of faith, resilience, and community.
-              </p>
-              <Link
-                to="/our-story"
-                className="inline-flex items-center gap-2 text-primary font-semibold hover:underline underline-offset-4"
-              >
-                Read Her Full Story <ArrowRight size={16} />
-              </Link>
-            </div>
-            <div className="flex justify-center">
-              <div className="rounded-2xl overflow-hidden max-w-sm relative">
-                {!imagesLoaded && (
-                  <div className="absolute inset-0 bg-gray-200 animate-pulse rounded-2xl z-10" />
-                )}
-                <img
-                  src={getImage("founder_photo")}
-                  alt="Esther Awori, Founder of Honeybee Ministries"
-                  className="w-full h-auto object-cover transition-opacity duration-500"
-                  loading="lazy"
-                />
-              </div>
-            </div>
-          </div>
+        <div className="mt-16 text-center">
+          <Link to="/contact" className="btn-hero btn-hero-primary">Partner With Us</Link>
         </div>
-      </section>
-
-      <section className="section-spacing bg-muted/40">
-        <div className="wide-container">
-          <div className="grid md:grid-cols-2 gap-10 md:gap-16 items-center">
-            <div className="flex justify-center order-2 md:order-1">
-              <div className="w-64 h-64 md:w-72 md:h-72 rounded-full overflow-hidden relative">
-                {!imagesLoaded && (
-                  <div className="absolute inset-0 bg-gray-200 animate-pulse rounded-full z-10" />
-                )}
-                <img
-                  src={getImage("prayer_preview")}
-                  alt="Community prayer"
-                  className="w-full h-full object-cover transition-opacity duration-500"
-                  loading="lazy"
-                />
-              </div>
-            </div>
-            <div className="order-1 md:order-2">
-              <p className="text-primary font-semibold text-sm uppercase tracking-wider mb-3">
-                Spiritual Life
-              </p>
-              <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-5">
-                Daily Prayer & Devotion
-              </h2>
-              <p className="text-muted-foreground leading-relaxed mb-4">
-                At the heart of Honeybee Ministries is our faith. We believe in the power of prayer and scripture to transform lives.
-              </p>
-              <blockquote className="border-l-4 border-primary pl-5 mb-6">
-                <p className="text-muted-foreground italic leading-relaxed text-sm">
-                  "For I know the plans I have for you," declares the LORD, "plans to prosper you and not to harm you, plans to give you hope and a future."
-                </p>
-                <cite className="text-xs text-foreground font-semibold block mt-2 not-italic">
-                  — Jeremiah 29:11
-                </cite>
-              </blockquote>
-              <Link
-                to="/daily-prayer"
-                className="inline-flex items-center gap-2 text-primary font-semibold hover:underline underline-offset-4"
-              >
-                Today's Prayer <ArrowRight size={16} />
-              </Link>
-            </div>
-          </div>
-        </div>
-      </section>
-
-      <section className="py-16 md:py-20 bg-forest text-forest-foreground">
-        <div className="content-container text-center">
-          <h2 className="text-3xl md:text-4xl font-bold mb-5">Vision 2025–2030</h2>
-          <p className="text-lg leading-relaxed opacity-90 max-w-2xl mx-auto mb-10">
-            Building a Hive of Hope — establishing sustainable community centers, training 500+ youth in vocational skills, and supporting over 200 children with special needs.
-          </p>
-          <Link
-            to="/vision"
-            className="inline-flex items-center gap-2 font-semibold opacity-90 hover:opacity-100 hover:underline underline-offset-4"
-          >
-            Read Our Vision <ArrowRight size={16} />
-          </Link>
-        </div>
-      </section>
-
-      <section className="section-spacing">
-        <div className="content-container text-center">
-          <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-5">
-            Get Involved
-          </h2>
-          <p className="text-lg text-muted-foreground leading-relaxed max-w-2xl mx-auto mb-10">
-            Whether you want to volunteer, donate, partner, or pray with us — we'd love to hear from you. Together, we can build a hive of hope.
-          </p>
-          <div className="flex flex-wrap justify-center gap-4">
-            <Link to="/get-involved" className="btn-hero btn-hero-primary">
-              Join the Hive
-            </Link>
-            <Link
-              to="/contact"
-              className="btn-hero border-1.5 border-foreground/20 text-foreground hover:bg-accent transition-colors"
-            >
-              Contact Us
-            </Link>
-          </div>
-        </div>
-      </section>
-    </>
+      </div>
+    </section>
   );
 };
 
-export default Index;
+export default Impact;
