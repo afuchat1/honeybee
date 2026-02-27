@@ -1,5 +1,13 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
+
+import aboutImg from "@/assets/about-preview.jpg";
+import programsImg from "@/assets/programs-preview.jpg";
+import skillsImg from "@/assets/skills-preview.jpg";
+import impactImg from "@/assets/impact-preview.jpg";
+import prayerImg from "@/assets/prayer-preview.jpg";
+import volunteerImg from "@/assets/volunteer-preview.jpg";
+import heroImg from "@/assets/hero-community.jpg";
 import founderImg from "@/assets/founder-esther.jpg";
 
 interface GalleryItem {
