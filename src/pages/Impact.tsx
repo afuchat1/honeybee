@@ -65,7 +65,6 @@ const Index = () => {
     fetchImages();
   }, []);
 
-  // Return DB URL if available after loading, otherwise placeholder
   const getImage = (key: string): string => {
     if (!imagesLoaded) return PLACEHOLDER_IMG;
     return siteImages[key] || PLACEHOLDER_IMG;
@@ -73,7 +72,6 @@ const Index = () => {
 
   return (
     <>
-      {/* Hero */}
       <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
         {!imagesLoaded && (
           <div className="absolute inset-0 bg-gray-200 animate-pulse z-0" />
@@ -114,7 +112,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* About Preview */}
       <section className="section-spacing">
         <div className="wide-container">
           <div className="grid md:grid-cols-2 gap-10 md:gap-16 items-center">
@@ -150,7 +147,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* What We Do */}
       <section className="section-spacing bg-muted/40">
         <div className="wide-container">
           <div className="text-center mb-14">
@@ -189,7 +185,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Image strip */}
       <section className="py-2 bg-background">
         <div className="wide-container">
           <div className="grid grid-cols-3 gap-2 md:gap-3">
@@ -210,7 +205,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Impact Stats */}
       <section className="py-16 md:py-20 bg-forest text-forest-foreground">
         <div className="wide-container text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-10">Our Impact So Far</h2>
@@ -238,7 +232,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Founder preview */}
       <section className="section-spacing">
         <div className="wide-container">
           <div className="grid md:grid-cols-2 gap-10 md:gap-16 items-center">
@@ -279,7 +272,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Daily Prayer preview */}
       <section className="section-spacing bg-muted/40">
         <div className="wide-container">
           <div className="grid md:grid-cols-2 gap-10 md:gap-16 items-center">
@@ -325,7 +317,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* Vision preview */}
       <section className="py-16 md:py-20 bg-forest text-forest-foreground">
         <div className="content-container text-center">
           <h2 className="text-3xl md:text-4xl font-bold mb-5">Vision 2025–2030</h2>
@@ -341,7 +332,6 @@ const Index = () => {
         </div>
       </section>
 
-      {/* CTA */}
       <section className="section-spacing">
         <div className="content-container text-center">
           <h2 className="text-3xl md:text-4xl font-bold text-foreground mb-5">
