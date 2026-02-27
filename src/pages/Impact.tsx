@@ -26,7 +26,7 @@ const programsList = [
   },
 ];
 
-// Tiny transparent placeholder (prevents broken image icon + layout shift)
+// Tiny transparent placeholder to prevent broken image icons + layout shift
 const PLACEHOLDER_IMG =
   "data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 1 1'%3E%3C/svg%3E";
 
@@ -43,6 +43,7 @@ const Index = () => {
 
         if (error) {
           console.error("Error fetching site images:", error);
+          return;
         }
 
         if (data) {
@@ -64,11 +65,9 @@ const Index = () => {
     fetchImages();
   }, []);
 
-  // Return DB URL if available, placeholder during loading
+  // Return DB URL if available after loading, otherwise placeholder
   const getImage = (key: string): string => {
-    if (!imagesLoaded) {
-      return PLACEHOLDER_IMG;
-    }
+    if (!imagesLoaded) return PLACEHOLDER_IMG;
     return siteImages[key] || PLACEHOLDER_IMG;
   };
 
@@ -201,7 +200,7 @@ const Index = () => {
                 )}
                 <img
                   src={getImage(key)}
-                  alt={key.replace("_preview", "").replace("-", " ")}
+                  alt={`${key.replace("_preview", "").replace("-", " ")} preview`}
                   className="w-full h-full object-cover transition-opacity duration-500"
                   loading="lazy"
                 />
