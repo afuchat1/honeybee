@@ -13,6 +13,15 @@ interface Program {
   sort_order: number;
 }
 
+interface ProgramGalleryItem {
+  id: string;
+  program_id: string;
+  image_url: string;
+  caption: string;
+  content: string;
+  sort_order: number;
+}
+
 const fallbackPrograms = [
   {
     id: "1",
@@ -54,14 +63,23 @@ const fallbackPrograms = [
 
 const Programs = () => {
   const [programs, setPrograms] = useState<Program[]>(fallbackPrograms);
+  const [galleryItems, setGalleryItems] = useState<ProgramGalleryItem[]>([]);
 
   useEffect(() => {
     const fetchPrograms = async () => {
       const { data } = await supabase.from("programs").select("*").order("sort_order");
       if (data && data.length > 0) setPrograms(data as Program[]);
     };
+    const fetchGallery = async () => {
+      const { data } = await supabase.from("program_gallery").select("*").order("sort_order");
+      if (data) setGalleryItems(data as ProgramGalleryItem[]);
+    };
     fetchPrograms();
+    fetchGallery();
   }, []);
+
+  const getGalleryForProgram = (programId: string) =>
+    galleryItems.filter((g) => g.program_id === programId);
 
   return (
     <section className="section-spacing">
@@ -72,35 +90,65 @@ const Programs = () => {
         </p>
 
         <div className="space-y-16">
-          {programs.map((program, index) => (
-            <article key={program.id}>
-              {index > 0 && <div className="mb-16 h-px bg-border/60" />}
-              <div className={`${program.image_url ? "md:flex md:gap-10 md:items-start" : ""}`}>
-                {program.image_url && (
-                  <img
-                    src={program.image_url}
-                    alt={program.title}
-                    className="w-full md:w-72 h-48 object-cover rounded-xl mb-6 md:mb-0 flex-shrink-0"
-                    loading="lazy"
-                  />
-                )}
-                <div>
-                  <h2 className="section-heading">{program.title}</h2>
-                  <p className="text-muted-foreground leading-relaxed mb-6">{program.description}</p>
-                  {program.goals && program.goals.length > 0 && (
-                    <ul className="space-y-2">
-                      {program.goals.map((goal) => (
-                        <li key={goal} className="flex items-start gap-3 text-muted-foreground text-sm">
-                          <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
-                          <span>{goal}</span>
-                        </li>
-                      ))}
-                    </ul>
+          {programs.map((program, index) => {
+            const gallery = getGalleryForProgram(program.id);
+            return (
+              <article key={program.id}>
+                {index > 0 && <div className="mb-16 h-px bg-border/60" />}
+                <div className={`${program.image_url ? "md:flex md:gap-10 md:items-start" : ""}`}>
+                  {program.image_url && (
+                    <img
+                      src={program.image_url}
+                      alt={program.title}
+                      className="w-full md:w-72 h-48 object-cover rounded-xl mb-6 md:mb-0 flex-shrink-0"
+                      loading="lazy"
+                    />
                   )}
+                  <div>
+                    <h2 className="section-heading">{program.title}</h2>
+                    <p className="text-muted-foreground leading-relaxed mb-6">{program.description}</p>
+                    {program.goals && program.goals.length > 0 && (
+                      <ul className="space-y-2">
+                        {program.goals.map((goal) => (
+                          <li key={goal} className="flex items-start gap-3 text-muted-foreground text-sm">
+                            <span className="w-1.5 h-1.5 rounded-full bg-primary mt-1.5 flex-shrink-0" />
+                            <span>{goal}</span>
+                          </li>
+                        ))}
+                      </ul>
+                    )}
+                  </div>
                 </div>
-              </div>
-            </article>
-          ))}
+
+                {/* Program Gallery / Stories */}
+                {gallery.length > 0 && (
+                  <div className="mt-10">
+                    <h3 className="text-lg font-serif font-semibold text-foreground mb-6">Stories & Gallery</h3>
+                    <div className="grid sm:grid-cols-2 lg:grid-cols-3 gap-6">
+                      {gallery.map((item) => (
+                        <div key={item.id} className="rounded-xl overflow-hidden border border-border bg-card">
+                          <img
+                            src={item.image_url}
+                            alt={item.caption || "Program gallery"}
+                            className="w-full h-48 object-cover"
+                            loading="lazy"
+                          />
+                          <div className="p-4">
+                            {item.caption && (
+                              <h4 className="font-semibold text-foreground mb-2">{item.caption}</h4>
+                            )}
+                            {item.content && (
+                              <p className="text-sm text-muted-foreground leading-relaxed">{item.content}</p>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+                    </div>
+                  </div>
+                )}
+              </article>
+            );
+          })}
         </div>
 
         <div className="mt-16 text-center">
