@@ -260,6 +260,44 @@ export type Database = {
         }
         Relationships: []
       }
+      program_gallery: {
+        Row: {
+          caption: string | null
+          content: string | null
+          created_at: string
+          id: string
+          image_url: string
+          program_id: string | null
+          sort_order: number
+        }
+        Insert: {
+          caption?: string | null
+          content?: string | null
+          created_at?: string
+          id?: string
+          image_url: string
+          program_id?: string | null
+          sort_order?: number
+        }
+        Update: {
+          caption?: string | null
+          content?: string | null
+          created_at?: string
+          id?: string
+          image_url?: string
+          program_id?: string | null
+          sort_order?: number
+        }
+        Relationships: [
+          {
+            foreignKeyName: "program_gallery_program_id_fkey"
+            columns: ["program_id"]
+            isOneToOne: false
+            referencedRelation: "programs"
+            referencedColumns: ["id"]
+          },
+        ]
+      }
       programs: {
         Row: {
           created_at: string
