@@ -6,7 +6,7 @@ import programsImgFallback from "@/assets/programs-preview.jpg";
 import skillsImgFallback from "@/assets/skills-preview.jpg";
 import impactImgFallback from "@/assets/impact-preview.jpg";
 import prayerImgFallback from "@/assets/prayer-preview.jpg";
-import founderImgFallback from "@/assets/founder-esther.jpg";
+import founderImgFallback from "@/assets/founder-portrait.jpg";
 import { Link } from "react-router-dom";
 import { Heart, GraduationCap, Wrench, Flame, ArrowRight } from "lucide-react";
 
