@@ -8,7 +8,7 @@ import impactImg from "@/assets/impact-preview.jpg";
 import prayerImg from "@/assets/prayer-preview.jpg";
 import volunteerImg from "@/assets/volunteer-preview.jpg";
 import heroImg from "@/assets/hero-community.jpg";
-import founderImg from "@/assets/founder-esther.jpg";
+import founderImg from "@/assets/founder-portrait.jpg";
 
 interface GalleryItem {
   id: string;
