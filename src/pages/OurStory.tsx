@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import founderImgFallback from "@/assets/founder-esther.jpg";
+import founderImgFallback from "@/assets/founder-portrait.jpg";
 import founderGraduation from "@/assets/founder-graduation.jpg";
 import { Link } from "react-router-dom";
 import { ArrowRight } from "lucide-react";
