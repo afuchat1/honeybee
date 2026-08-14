@@ -1,6 +1,7 @@
 import { useEffect, useState } from "react";
 import { MessageCircle } from "lucide-react";
 import { supabase } from "@/integrations/supabase/client";
+import { validateWhatsAppNumber, normalizePhone } from "@/lib/phone";
 
 const DEFAULT_NUMBER = "256758574664";
 
@@ -14,8 +15,8 @@ export function WhatsAppFab() {
       .eq("setting_key", "whatsapp_number")
       .maybeSingle()
       .then(({ data }) => {
-        const val = (data as any)?.setting_value?.replace(/[^0-9]/g, "");
-        if (val) setNumber(val);
+        const raw = (data as any)?.setting_value ?? "";
+        if (raw && !validateWhatsAppNumber(raw)) setNumber(normalizePhone(raw));
       });
   }, []);
 
