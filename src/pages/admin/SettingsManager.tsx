@@ -7,6 +7,7 @@ import { useToast } from "@/hooks/use-toast";
 import { logActivity } from "@/lib/logActivity";
 import { Save } from "lucide-react";
 import NotificationEmailsManager from "./NotificationEmailsManager";
+import { validateWhatsAppNumber, normalizePhone } from "@/lib/phone";
 
 interface Setting {
   id: string;
