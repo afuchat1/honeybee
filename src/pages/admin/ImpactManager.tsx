@@ -84,7 +84,8 @@ const ImpactManager = () => {
       return;
     }
     const { data: urlData } = supabase.storage.from("uploads").getPublicUrl(path);
-    await supabase.from("impact_stories").update({ [field]: urlData.publicUrl }).eq("id", storyId);
+    const patch = field === "image_url" ? { image_url: urlData.publicUrl } : { profile_image_url: urlData.publicUrl };
+    await supabase.from("impact_stories").update(patch).eq("id", storyId);
     toast({ title: "Image uploaded" });
     setUploading(false);
     fetchData();
