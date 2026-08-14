@@ -27,6 +27,8 @@ const SettingsManager = () => {
     setSettings(items);
     const vals: Record<string, string> = {};
     items.forEach((s) => { vals[s.setting_key] = s.setting_value; });
+    // Ensure the WhatsApp prefilled message field is editable even if not yet seeded.
+    if (!vals.hasOwnProperty("whatsapp_message")) vals.whatsapp_message = "";
     setValues(vals);
   };
 
@@ -40,6 +42,8 @@ const SettingsManager = () => {
       return;
     }
     setSaving(true);
+    const existingKeys = new Set(settings.map((s) => s.setting_key));
+
     for (const setting of settings) {
       let newValue = values[setting.setting_key];
       if (setting.setting_key === "whatsapp_number") newValue = normalizePhone(newValue || "");
@@ -47,6 +51,15 @@ const SettingsManager = () => {
         await supabase.from("site_settings").update({ setting_value: newValue }).eq("id", setting.id);
       }
     }
+
+    // Insert any new settings that exist in values but not in the database yet.
+    for (const [key, value] of Object.entries(values)) {
+      if (existingKeys.has(key)) continue;
+      let newValue = value;
+      if (key === "whatsapp_number") newValue = normalizePhone(newValue || "");
+      await supabase.from("site_settings").insert({ setting_key: key, setting_value: newValue });
+    }
+
     await logActivity("updated", "site_settings");
     toast({ title: "Settings saved" });
     setSaving(false);
@@ -65,7 +78,12 @@ const SettingsManager = () => {
     instagram_url: "Instagram URL",
     youtube_url: "YouTube URL",
     whatsapp_number: "WhatsApp Number (e.g. 256758574664)",
+    whatsapp_message: "WhatsApp Prefilled Message",
     meta_description: "SEO Meta Description",
+  };
+
+  const placeholders: Record<string, string> = {
+    whatsapp_message: "Hello Honeybee Ministries, I would like to know more about your work.",
   };
 
   return (
@@ -105,6 +123,20 @@ const SettingsManager = () => {
               </div>
             );
           })}
+
+          {/* WhatsApp prefilled message is rendered explicitly so it can be edited even before a DB row exists. */}
+          {values.hasOwnProperty("whatsapp_message") && !settings.some((s) => s.setting_key === "whatsapp_message") && (
+            <div>
+              <Label className="text-sm">{labels.whatsapp_message}</Label>
+              <Input
+                value={values.whatsapp_message || ""}
+                placeholder={placeholders.whatsapp_message}
+                onChange={(e) => setValues({ ...values, whatsapp_message: e.target.value })}
+                className="mt-1"
+              />
+            </div>
+          )}
+
           {settings.length === 0 && (
             <p className="text-sm text-muted-foreground">No settings configured.</p>
           )}
