@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { supabase } from "@/integrations/supabase/client";
-import heroImageFallback from "@/assets/hero-community.jpg";
+
 import aboutImgFallback from "@/assets/about-preview.jpg";
 import programsImgFallback from "@/assets/programs-preview.jpg";
 import skillsImgFallback from "@/assets/skills-preview.jpg";
