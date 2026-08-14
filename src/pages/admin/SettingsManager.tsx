@@ -32,10 +32,17 @@ const SettingsManager = () => {
 
   useEffect(() => { fetchData(); }, []);
 
+  const whatsappError = validateWhatsAppNumber(values.whatsapp_number || "");
+
   const handleSave = async () => {
+    if (whatsappError) {
+      toast({ title: "Invalid WhatsApp number", description: whatsappError, variant: "destructive" });
+      return;
+    }
     setSaving(true);
     for (const setting of settings) {
-      const newValue = values[setting.setting_key];
+      let newValue = values[setting.setting_key];
+      if (setting.setting_key === "whatsapp_number") newValue = normalizePhone(newValue || "");
       if (newValue !== setting.setting_value) {
         await supabase.from("site_settings").update({ setting_value: newValue }).eq("id", setting.id);
       }
