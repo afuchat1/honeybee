@@ -55,6 +55,8 @@ const SettingsManager = () => {
     facebook_url: "Facebook URL",
     twitter_url: "Twitter URL",
     instagram_url: "Instagram URL",
+    youtube_url: "YouTube URL",
+    whatsapp_number: "WhatsApp Number (e.g. 256758574664)",
     meta_description: "SEO Meta Description",
   };
 
