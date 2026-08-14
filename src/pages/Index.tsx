@@ -35,8 +35,10 @@ const Index = () => {
   return (
     <>
       {/* Hero */}
-      <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden">
-        <img src={img("hero_background", heroImageFallback)} alt="Honeybee Ministries community in Eastern Uganda" className="absolute inset-0 w-full h-full object-cover" loading="eager" />
+      <section className="relative min-h-[85vh] flex items-center justify-center overflow-hidden bg-forest">
+        {siteImages.hero_background && (
+          <img src={siteImages.hero_background} alt="Honeybee Ministries community in Eastern Uganda" className="absolute inset-0 w-full h-full object-cover" loading="eager" />
+        )}
         <div className="hero-overlay" />
         <div className="relative z-10 text-center px-4 max-w-3xl mx-auto hero-text">
           <h1 className="text-4xl md:text-6xl font-bold mb-4 leading-tight">Welcome to<br />Honeybee Ministries</h1>
