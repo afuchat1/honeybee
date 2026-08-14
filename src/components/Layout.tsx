@@ -16,6 +16,7 @@ export function Layout() {
         <Outlet />
       </main>
       <Footer />
+      <WhatsAppFab />
     </div>
   );
 }

@@ -71,6 +71,12 @@ export function Footer() {
                 {(settings.facebook_url || "https://facebook.com/honeybeeministriesug") && (
                   <a href={settings.facebook_url || "https://facebook.com/honeybeeministriesug"} target="_blank" rel="noopener noreferrer" className="opacity-80 hover:opacity-100">Facebook</a>
                 )}
+                {settings.youtube_url && (
+                  <a href={settings.youtube_url} target="_blank" rel="noopener noreferrer" className="opacity-80 hover:opacity-100">YouTube</a>
+                )}
+                {settings.whatsapp_number && (
+                  <a href={`https://wa.me/${settings.whatsapp_number.replace(/[^0-9]/g, "")}`} target="_blank" rel="noopener noreferrer" className="opacity-80 hover:opacity-100">WhatsApp</a>
+                )}
               </div>
             </div>
           </div>
