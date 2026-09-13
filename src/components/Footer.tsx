@@ -94,6 +94,23 @@ export function Footer() {
           <div>
             © {new Date().getFullYear()} {settings.site_name || "Honeybee Ministries"}. All rights reserved.
           </div>
+          <div className="mt-4 flex items-center justify-center gap-2">
+            <span>Developed by</span>
+            <a href="https://afuchat.com" target="_blank" rel="noopener noreferrer" aria-label="ATL - afuchat.com" className="inline-block hover:opacity-90 transition-opacity">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 136 52" role="img" aria-labelledby="atl-title" className="h-8 w-auto">
+                <title id="atl-title">ATL</title>
+                <rect x="1.5" y="1.5" width="133" height="49" rx="13" fill="#fff" stroke="#0B63CE" strokeWidth="3"/>
+                <g fill="#0B63CE">
+                  <rect x="10" y="26" width="5" height="8" rx="2"/>
+                  <rect x="18" y="18" width="5" height="16" rx="2" fill="#084A9E"/>
+                  <rect x="26" y="22" width="5" height="12" rx="2"/>
+                  <rect x="34" y="12" width="5" height="22" rx="2" fill="#084A9E"/>
+                </g>
+                <path d="M9 38h31" fill="none" stroke="#084A9E" strokeWidth="2" strokeLinecap="round" opacity=".45"/>
+                <text x="78" y="35" fill="#084A9E" fontFamily="Arial, Helvetica, sans-serif" fontSize="25" fontWeight="900" letterSpacing="2.5" textAnchor="middle">ATL</text>
+              </svg>
+            </a>
+          </div>
         </div>
       </div>
     </footer>
