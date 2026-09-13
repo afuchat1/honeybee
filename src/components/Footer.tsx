@@ -97,7 +97,7 @@ export function Footer() {
           <div className="mt-4 flex items-center justify-center gap-2">
             <span>Developed by</span>
             <a href="https://afuchat.com" target="_blank" rel="noopener noreferrer" aria-label="ATL - afuchat.com" className="inline-block hover:opacity-90 transition-opacity">
-              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 136 52" role="img" aria-labelledby="atl-title" className="h-8 w-auto">
+              <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 136 52" role="img" aria-labelledby="atl-title" className="h-5 w-auto">
                 <title id="atl-title">ATL</title>
                 <rect x="1.5" y="1.5" width="133" height="49" rx="13" fill="#fff" stroke="#0B63CE" strokeWidth="3"/>
                 <g fill="#0B63CE">
