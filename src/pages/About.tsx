@@ -82,7 +82,7 @@ const About = () => {
 
         <div className="mt-16 text-center">
           <Link to="/our-story" className="inline-flex items-center gap-2 text-primary font-semibold hover:underline underline-offset-4">
-            Read Our Full Story <ArrowRight size={16} />
+            Read Our chairman <ArrowRight size={16} />
           </Link>
         </div>
       </div>
